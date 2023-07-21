@@ -1,0 +1,3 @@
+shapely
+geopandas
+w3storage
