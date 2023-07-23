@@ -1,32 +1,32 @@
 {
-  "name": "dfns",
+  "name": "@gadius/dfns",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "packages/dfns/src",
+  "sourceRoot": "libs/dfns/src",
   "projectType": "library",
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/packages/dfns",
-        "main": "packages/dfns/src/index.ts",
-        "tsConfig": "packages/dfns/tsconfig.lib.json",
-        "assets": ["packages/dfns/*.md"]
+        "outputPath": "libs/dfns",
+        "main": "dfns/src/index.ts",
+        "tsConfig": "libs/dfns/tsconfig.lib.json",
+        "assets": ["libs/dfns/*.md"]
       }
     },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["packages/dfns/**/*.ts"]
+        "lintFilePatterns": ["libs/dfns/**/*.ts"]
       }
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["coverage/packages/dfns"],
+      "outputs": ["coverage/libs/dfns"],
       "options": {
         "passWithNoTests": true,
-        "reportsDirectory": "../../coverage/packages/dfns"
+        "reportsDirectory": "../../coverage/libs/dfns"
       }
     }
   },

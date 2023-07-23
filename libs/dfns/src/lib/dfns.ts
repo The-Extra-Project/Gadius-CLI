@@ -1,11 +1,10 @@
 import 'axios';
 import dotenv from 'dotenv';
-import { Express } from 'express';
 import { DfnsApiClient, DfnsApiClientOptions, DfnsError } from '@dfns/sdk';
 import { AsymmetricKeySigner } from '@dfns/sdk-keysigner';
 /**
  * @class dfnsAuth is the package to interact with the dfns.co API in order to
- *  - spin up the EOA and setup authenticated signin session.
+ * - Spin up the EOA and setup authenticated signin session.
  * - setting up the policy conditions based on certain conditions of spending operations
  *
  *
@@ -13,7 +12,7 @@ import { AsymmetricKeySigner } from '@dfns/sdk-keysigner';
  */
 dotenv.config();
 
-interface signerConfig {
+export interface signerConfig {
   privateKey: string;
   credId: string;
   endpoint: string; // to point to api.dfns.ninja
@@ -43,10 +42,10 @@ declare global {
   }
 }
 
-class dfnsAuth {
+export class dfnsAuth {
   keySigner: AsymmetricKeySigner;
   apiClient: DfnsApiClient;
-  admins: string[]; // these are the various signers that will be selected by the wallet provider and they can inforce the policy
+  //admins: string[]; // these are the various signers that will be selected by the wallet provider and they can inforce the policy
 
   constructor(
     signerConfig: signerConfig,
@@ -66,10 +65,8 @@ class dfnsAuth {
   }
 
   /**
-   *
-   * @param params
+   * @param params is the input of the request that is to be signed by the user for the validation of the data.
    */
-
   async signData(params: requestsSign): Promise<any> {
     let returnSign: any;
     // IMP: very stupid technique for now: adding all the corresponding strings and then signing
@@ -83,9 +80,6 @@ class dfnsAuth {
         console.error(err);
       }
     }
-
     return returnSign;
   }
-
-  async adminPolicyApproval() {}
 }

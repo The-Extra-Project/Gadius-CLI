@@ -24,19 +24,13 @@
     "vite-tsconfig-paths": "~4.2.0",
     "vitest": "~0.32.0"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "apps": [
-      "apps/*"
-    ]
-  },
-  "nx": {
-    "targets": {}
+  "script": {
+    "nx": "nx",
+    "serve": "nx run-many --target=serve --all"
   },
   "dependencies": {
     "@nx/devkit": "^16.5.3",
+    "@nx/web": "^16.5.5",
     "@nxlv/python": "^16.1.2"
   }
 }

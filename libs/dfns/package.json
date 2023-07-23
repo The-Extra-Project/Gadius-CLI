@@ -1,5 +1,5 @@
 {
-  "name": "dfns",
+  "name": "@gadius/dfns",
   "version": "0.0.1",
   "type": "commonjs",
   "dependencies": {

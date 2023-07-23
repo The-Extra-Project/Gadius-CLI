@@ -8,6 +8,19 @@
       }
     }
   },
+
+  "pluginsConfig" : {
+    "@nrwl/js": {
+      "analyzeSourceFiles": true
+    }
+  },
+
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "libs"
+  },
   "affected": {
     "defaultBase": "master"
   },

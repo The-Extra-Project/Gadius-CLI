@@ -1,0 +1,5 @@
+[
+  "constructor(address,string,string,address)",
+  "error InvalidNullifier()",
+  "function verifyAndExecute(address,uint256,uint256,uint256[8],address,tuple(string,string,string),string)"
+]

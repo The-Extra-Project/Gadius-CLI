@@ -1,0 +1,6 @@
+[
+  "function acceptResult(uint256,uint256) returns (uint256)",
+  "function getModuleSpec(string,string) pure returns (string)",
+  "function registerJobCreator()",
+  "function runModuleWithDefaultMediators(string,string) payable returns (uint256)"
+]

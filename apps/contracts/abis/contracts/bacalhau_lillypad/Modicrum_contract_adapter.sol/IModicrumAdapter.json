@@ -1,0 +1,3 @@
+[
+  "function runComputeJob(tuple(string,string,string),string) payable returns (uint256)"
+]
