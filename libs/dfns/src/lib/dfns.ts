@@ -58,8 +58,8 @@ export class dfnsAuth {
     });
     this.apiClient = new DfnsApiClient({
       appId: 'ap-2gg3n-bbr1t-9p78dlmcl4uikvnt',
-      baseUrl: '<https://api.dfns.ninja>',
-      authToken: 'eyJ...6qA',
+      baseUrl: 'https://api.dfns.ninja',
+      authToken: process.env.AUTH_TOKEN,
       signer: this.keySigner,
     });
   }
