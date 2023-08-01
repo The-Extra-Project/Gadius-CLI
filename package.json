@@ -1,6 +1,6 @@
 {
-  "name": "Gadus",
-  "version": "0.0.1",
+  "name": "gadus",
+  "version": "0.0.0",
   "author": "Dhruv <malikdhruv1994@gmail.com>",
   "license": "MIT",
   "private": "true",
@@ -24,13 +24,19 @@
     "vite-tsconfig-paths": "~4.2.0",
     "vitest": "~0.32.0"
   },
-  "script": {
-    "nx": "nx",
-    "serve": "nx run-many --target=serve --all"
+  "packageManager": "pnpm@8.6.10",
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test"
   },
+  "workspaces": [
+    "apps/**",
+    "package/**"
+  ],
   "dependencies": {
     "@nx/devkit": "^16.5.3",
     "@nx/web": "^16.5.5",
-    "@nxlv/python": "^16.1.2"
+    "@nxlv/python": "^16.1.2",
+    "tslib": "2.5.0"
   }
 }
