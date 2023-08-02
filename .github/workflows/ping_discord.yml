@@ -25,7 +25,7 @@ jobs:
     # The `runs-on` key in this example configures the job to run on a GitHub-hosted runner or a self-hosted runner, depending on the repository running the workflow. 
     # 
     # In this example, the job will run on a self-hosted runner if the repository is named `docs-internal` and is within the `github` organization. If the repository doesn't match this path, then it will run on an `ubuntu-latest` runner hosted by GitHub. For more information on these options, see "[AUTOTITLE](/actions/using-jobs/choosing-the-runner-for-a-job)."
-    runs-on: ${{ fromJSON('["ubuntu-latest", "self-hosted"]')[github.repository == 'github/docs-internal'] }}
+    runs-on: ubuntu-latest
     # The `steps` key groups together all the steps that will run as part of the `check-links` job. Each job in a workflow has its own `steps` section.
     steps:
       # The `uses` key tells the job to retrieve the action named `actions/checkout`. This is an action that checks out your repository and downloads it to the runner, allowing you to run actions against your code (such as testing tools). You must use the checkout action any time your workflow will use the repository's code or you are using an action defined in the repository.
@@ -44,11 +44,11 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         if: always()
         with:
-            webhook: ${{ secrets.DISCORD_WEBHOOK }}
+            webhook: ${{ secrets.GADUS.DISCORD_WEBHOOK }}
             status: ${{ job.status }}
             content: "progress: ${{github.event.head_commit.message}}"
             title: "deploy"
             description: "progress : ${{github.event.commits}}"
             color: 0x0000ff
-            url: "https://github.com/The-Extra-Project/lidarhdpip"
+            url: "https://github.com/The-Extra-Project/Gadus-CLI"
             username: "dhruvmalik007"
