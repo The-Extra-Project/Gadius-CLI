@@ -1,0 +1,34 @@
+name: test of all modules
+
+on:
+    pull_request:
+        branches:
+            - main
+
+jobs: 
+    build_test:
+        name: Build and Test
+        runs-on: ubuntu-latest
+   
+        steps:
+          - name: Check out code
+            uses: actions/checkout@v3
+            
+          - name: setting up the pnpm action
+            uses: pnpm/action-setup@v2.2.4
+            with:
+                version: 8
+            
+
+          - name: Install dependencies 
+            run: pnpm install 
+
+          - name: installing modules
+            run: pnpm run build
+        
+          - name: test all modules
+            run: pnpm run test
+          
+
+         
+        
