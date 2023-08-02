@@ -1,7 +1,11 @@
-# Cli
-This package wraps the call above the lillypad cli package in order to execute the operations of the given docker image using lilypad.
+# @gadus/reconstruction-cli package
+This package wraps the call above the lillypad / 3DTIlesrendering in order to execute the georender package and then rendering the job once the resulting 3Dtile is generated.
 
-user needs to set the wallet address (ie PRIVATE_KEY) parameter along with funding sufficient ETH in order to start running the execution of the docker image.
+## Building steps:
+
+- User needs to set the wallet address (ie PRIVATE_KEY) parameter along with funding sufficient [lil-ETH](https://docs.lilypadnetwork.org/lilypad-v1-testnet/quick-start/funding-your-wallet-from-faucet) in order to start running the job submission.
+
+- build the package via `turbo build` and then getting access directly from the repository using `npm start -h`.
 
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
