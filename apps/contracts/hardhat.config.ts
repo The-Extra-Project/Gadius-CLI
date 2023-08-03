@@ -1,4 +1,5 @@
 import * as dotenv from "dotenv";
+import "@nomicfoundation/hardhat-ethers";
 
 // ref: https://github.com/pcaversaccio/hardhat-project-template-ts/blob/main/hardhat.config.ts
 
@@ -9,7 +10,6 @@ import  "@nomicfoundation/hardhat-ethers"
 import "@nomiclabs/hardhat-ethers";
 import "@nomicfoundation/hardhat-chai-matchers";
 import "@nomiclabs/hardhat-etherscan";
-import "@nomicfoundation/hardhat-ledger";
 import "@typechain/hardhat";
 //import "@truffle/dashboard-hardhat-plugin";
 // import "@matterlabs/hardhat-zksync-solc";
@@ -95,7 +95,7 @@ const config: HardhatUserConfig = {
       chainId: 31337,
       hardfork: "shanghai",
       forking: {
-        url: process.env.ETH_MAINNET_URL || "",
+        url: process.env.ETH_MAINNET_URL || "http://testnet.lilypadnetwork.org:8545/",
         // The Hardhat network will by default fork from the latest mainnet block
         // To pin the block number, specify it below
         // You will need access to a node with archival data for this to work!
@@ -180,8 +180,7 @@ const config: HardhatUserConfig = {
     lillypadTestnet: {
       chainId: 1337,
       url: "http://testnet.lilypadnetwork.org:8545/",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts: process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [] ,
 
     },
     arbitrumMain: {
