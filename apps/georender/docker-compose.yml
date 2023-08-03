@@ -1,16 +1,10 @@
 version: "3.9"
 services:
-  georender :
+  georender_build:
     build: 
       context: .
-      dockerfile: Dockerfile-pdal
-    image: lxet/lidar_geocoordinate:0.1
+      dockerfile: Dockerfile.georender
     volumes:
-      - ../data:/usr/src/app/data
-
-  
-  bacalhau:
-    build: 
-      context: .
-      dockerfile: Dockerfile.bacalhau
-    image: lxet/bacalau:0.1
+      - ../georender/:/usr/src/app/georender/
+    ports:
+      - "8000:8001"

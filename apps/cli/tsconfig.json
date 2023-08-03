@@ -1,21 +1,24 @@
 {
 
-  "extends": "../../tsconfig.base.json",
   "compileOnSave": true,
   "compilerOptions": {
+    "outDir": "dist/",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "es2015",
-    "module": "esnext",
+    "target": "ES6",
+    "module": "CommonJS",
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {}
+  },
+  "ts-node": {
+    "esm": true
   },
   "exclude": ["node_modules", "tmp"]
 }

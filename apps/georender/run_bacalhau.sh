@@ -1,5 +1,9 @@
 #!/bin/bash
-name = 'lxet/las_processing_bacalau'
+## this dockerfile is useful for testing the deployment on traditional bacalau system.
+
+
+ 
+name = "lxet/lidar_geocoordinate"
 
 
 ## enter the type of function (rendering for polygon or based on the point). 
@@ -8,9 +12,9 @@ name = 'lxet/las_processing_bacalau'
 
 params = ()
 
-while read arg; do
-    params+=("$arg")
-done < filedetails
+for str in  ${params[@]}; do
+    params+=("$str")
+done 
 
 #if $param = 0
 # then

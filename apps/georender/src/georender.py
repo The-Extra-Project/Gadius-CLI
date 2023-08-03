@@ -9,7 +9,8 @@ import os
 import requests
 from subprocess import run
 import logging
-
+from py3dtiles  import Tileset
+import sys
 from pathlib import Path
 
 ## for standardization of the coordinates (https://pyproj4.github.io/pyproj/stable/examples.html)
@@ -65,14 +66,6 @@ def fetch_shp_file(ipfs_cid, _filename, username) -> str:
     
     return (os.getcwd() + "/" +_filename)
   
- 
-#  def fetch_pipeline_template(ipfs_cid, _filename, username):
-#      """
-#      gets the template file corresponding to the given rendering job
-     
-     
-#      """
- 
  
  
 def create_bounding_box(latitude_max: int, lattitude_min: int, longitude_max: int, longitude_min: int):
@@ -252,7 +245,7 @@ def upload_files():
     return loaded_files_cid
 
 ## Pipeline creation
-def run_georender_pipeline_point():
+def run_georender_pipeline_point(vals=sys.argv):
     """
     this function the rendering data pipeline of various .laz file and generate the final 3Dtile format.
     :coordinateX: lattitude coordinate 
@@ -271,7 +264,57 @@ def run_georender_pipeline_point():
     args.add_argument("coordinateX", help="write lattitude in source coordinate system")
     args.add_argument("coordinateY")
     args.add_argument("username")
-    args.add_argument("ipfs_cid",nargs='+',help="compulsory: set the address via comma between them", required=True)
+    args.add_argument("ipfs_cid",nargs='+',help="compulsory: adds the ipfs of the raw cloud image and the corresponding pipeline template. add first the cid of laz file and then of the pipeline template (separated by the space)", required=True)
+    args.add_argument("filename")
+    
+    if  len(vals):
+        parameters = vals
+        run_georender_pipeline_point(parameters)
+    
+    laz_path, fname, dirname = get_tile_details_point(parameters.coordinateX, parameters.coordinateY, parameters.userprofile, parameters.filename, parameters.ipfs_cid)
+
+    os.chdir( os.getcwd() + "/data") 
+    os.mkdir(parameters.userprofile)
+    
+    # Causes in case if the file has the interrupted downoad.
+    if not os.path.isfile( fname ): 
+        check_call( ["wget", "--user-agent=Mozilla/5.0", laz_path])
+    # Extract it
+    check_call( ["7z", "-y", "x", fname] ) 
+    pipeline_ipfs = parameters["ipfs_cid"][0]
+    generate_pdal_pipeline( dirname, pipeline_ipfs, parameters["username"] )
+
+    # run pdal pipeline with the generated json :
+    os.chdir( dirname )
+    # todo : There should be further doc and conditions on this part
+    #        Like understanding why some ign files have it and some don't
+    # In case the WKT flag is not set :
+    # need to handle the edge cases with different EPSG coordinate standards
+    for laz_fname in os.listdir( '.' ):
+        f = open( laz_fname, 'rb+' )
+        f.seek( 6 )
+        f.write( bytes( [17, 0, 0, 0] ) )
+        f.close()
+    ## now running the command to generate the 3d tile from the stored pipeline 
+    pipeline_template = parameters["ipfs_cid"][1] 
+    check_call( ["pdal", "pipeline",pipeline_template] )
+    
+    shutil.move( 'result.las', '../result.las' )
+    print('resulting rendering successfully generated, now uploading the files to ipfs')
+    w3.post_upload('result.las')
+    w3.post_upload()
+
+
+def run_georender_pipeline_polygon():
+    """
+    This function allows to run pipeline for the given bounded location and gives back the rendered 3D tileset
+    :coordinates: a list of 4 coordinates [lattitude_max, lattitude_min, longitude_max, longitude_min ]
+    ::    
+    """
+    args = argparse.ArgumentParser(description="runs the georender pipeline based on the given geometric polygon")
+    args.add_argument("coordinates", nargs=4, help="writes the bounding coordinates (longitude max/ min and then lattitude points separated by ,)")
+    args.add_argument("username")
+    args.add_argument("ipfs_cid",nargs='+',help="compulsory: adds the ipfs of the raw cloud image and the corresponding pipeline template. add first the cid of laz file and then of the pipeline template (separated by the space)", required=True)
     args.add_argument("filename")
     parameters = args.parse_args()
     
@@ -299,33 +342,44 @@ def run_georender_pipeline_point():
         f.seek( 6 )
         f.write( bytes( [17, 0, 0, 0] ) )
         f.close()
-    check_call( ["pdal", "pipeline", "../pipeline_gen.json"] )
+    ## now running the command to generate the 3d tile from the stored pipeline 
+    pipeline_template = parameters["ipfs_cid"][1] 
+    check_call( ["pdal", "pipeline",pipeline_template] )
     
     shutil.move( 'result.las', '../result.las' )
     print('resulting rendering successfully generated, now uploading the files to ipfs')
     w3.post_upload('result.las')
     w3.post_upload()
-
-
-
-
-def run_georender_pipeline_polygon():
+    
+def las_to_tiles_conversion(username: str):
     """
-    This function allows to run pipeline for the given bounded location and gives back the rendered 3D tileset
-    :coordinates: a list of 4 coordinates [lattitude_max, lattitude_min, longitude_max, longitude_min ]
-    ::    
+    this function runs the dockerised version of the py3Dtiles in order to take in the las file
+    generated in the `run_georender_pipeline_point` and convert it to the 3D tiles.
+    based on the pipeline generataed for the pdal. 
+    
+    las_file: corresponds to the las file generated as the result
     """
-    pass
+        
+    last_las_file = os.path.abspath("/app/usr/georender/src/data/" + username + "/result.las")
+        
+    destination_tile_file = os.getcwd() + username + '/3dtiles'
+    # run the dockerised version of the py3dtiles application
+    check_call( ["docker", "run", "-it", "--rm" ,
+            "--mount-type=bind, source= ${}/data".format(os.getcwd()) ,
+            " --target /app/data/" +  destination_tile_file   
+            + "registry.gitlab.com/oslandia/py3dtiles:142-create-docker-image" , "convert " , "app/usr/data/" + last_las_file  + "--out" + destination_tile_file ])
 
-def las_to_tiles_conversion(las_file: str, username: str):
-    pass    
+    file_name = os.listdir(destination_tile_file)
+        # Causes in case if the file has the interrupted downoad.
+    if os.path.isdir( destination_tile_file ): 
+        print("uploading the final tile files")
+        w3.post_upload(files=file_name)
 
-
-
-
-def main():
-    run_georender_pipeline_point()
-
+def main(cliargs=None):
+    args = argparse.ArgumentParser().parse_args(cliargs)
+    run_georender_pipeline_point(sys.argv[1:])
+    print("now storing the tiled files to the destination web3.storage")
+    las_to_tiles_conversion(cliargs["username"])
 
 if __name__ == "__main__":
     main()
