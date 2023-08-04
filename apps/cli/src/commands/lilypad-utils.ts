@@ -1,4 +1,7 @@
 import {exec} from "child_process"
+
+
+
 interface surfaceReconstructionJob {
 image?: string,
 coorindates: string[],
@@ -12,7 +15,4 @@ try {
 } catch(error) {
     console.error("Error  while execution:", error);
 }
-
-
-
 }

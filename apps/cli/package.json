@@ -1,10 +1,9 @@
 {
-  "name": "@gadus/cli",
+  "name": "cli",
   "version": "0.0.1",
   "license": "MIT",
   "main": "./dist/index.js",
   "bin": "./dist/cli.js",
-
   "scripts": {
     "start": "ts-node src/index.ts",
     "clean": "rimraf ./dist/ ./exec/",
@@ -14,14 +13,16 @@
   "private": true,
   "dependencies": {
     "chalk": "^5.3.0",
+    "cli": "^0.0.1",
     "figlet": "^1.6.0",
     "tsc": "^2.0.4",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
     "commander": "^11.0.0",
+    "contracts": "*",
     "dotenv": "^16.3.1",
-    "ethers": "^6.6.7",
+    "ethers": "^6.7.0",
     "prettier": "^2.6.2",
     "typescript": "^5.1.6"
   }
