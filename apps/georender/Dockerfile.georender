@@ -1,24 +1,23 @@
 FROM pdal/pdal
 
 
-RUN curl -sSL https://install.python-poetry.org | python3 -   && export PATH="/root/.local/bin:$PATH" &&  poetry install \
-
-
-COPY poetry.lock pyproject.toml /usr/src/app/georender/
-
-COPY . /usr/src/app/georender/
-
-RUN  poetry install
+## copying all the files from the local machine to the given docker container
 
 WORKDIR /usr/src/app
 
-RUN echo ls /usr/src/app/georender 
+## there is difference between ADD and COPY. copy will only transfer the files from the given dockerfile source to destination
+## whereas the ADD command transfers the file from the 
+ADD poetry.lock pyproject.toml /usr/src/app/georender/
+ADD . /usr/src/app/georender/
 
 RUN  apt-get update && apt-get install -y git wget jq p7zip-full --assume-yes
 
 RUN  apt-get install -y python3-pip python3-dev --assume-yes
 
-ENV PATH="/root/.local/bin:$PATH"
+
+# installing poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -   && export PATH="/root/.local/bin:$PATH" && cd /georender/ && poetry install
+
 
 
 
