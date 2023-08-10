@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "TILE-RENDERING"
+version = "0.0.1"
+description = "simple streamlitfrontend (integrated with 3DtilesrenderJS to render the format )."
+authors = ["Dhruv Malik"]
+license = 'MIT'
+readme = 'README.md'
+
+
+[tool.setuptools]
+packages=["georender"]
+package-dir = {"" = "src"}
+
+[tool.poetry.scripts]
+test = 'scripts:test'
+  
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[virtualenvs]
+prefer-active-python= "true"
