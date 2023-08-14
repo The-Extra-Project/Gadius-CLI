@@ -1,13 +1,18 @@
-FROM node:4-onbuild
+FROM node:lts-alpine
 
-WORKDIR /apps/cli
-COPY . /apps/cli
+COPY . /usr/src/apps/cli
+
+COPY package.json ./usr/src/apps/cli/
+WORKDIR /usr/src/apps/cli
+
+
+
+
 
 
 ## installing yarn in the docker envionrment
 RUN npm install  
 
 EXPOSE 8081
-
-CMD [ "/bin/bash", "-c", "yarn start" ]
+CMD [ "/bin/bash -c ts-node", " src/index.ts" ]
 

@@ -1,5 +1,7 @@
 # Gadius CLI:  :fishing_pole_and_fish:
-This tool is WIP and the whole pipeline is not ready for the hackathon submission.
+
+Swiss knife for running jobs for geospatial analysis on compute over data infrastrutcture (bacalhau).
+
 
 CLI tool for:
 -  Execute geospatial data analysis over [compute-over-data](https://www.cod.cloud) infrasturcture, 
