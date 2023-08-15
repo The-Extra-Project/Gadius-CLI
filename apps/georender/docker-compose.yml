@@ -5,6 +5,20 @@ services:
       context: .
       dockerfile: Dockerfile.georender
     volumes:
-      - ../georender/:/usr/src/app/georender/
+      - type: bind
+        source: ../georender/
+        target: /usr/src/app/georender/
+
     ports:
       - "8000:8001"
+
+  migration:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrateFiles
+    volumes:
+      - type: bind
+        source: ./utils/
+        target: /usr/src/app/migration/
+    
+  

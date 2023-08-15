@@ -6,28 +6,25 @@ from shapely.geometry import Polygon, Point
 from shapely.ops import transform
 from utils.web3Storage import API
 import os
-import requests
 from subprocess import run
 import logging
 from py3dtiles  import Tileset
 import sys
 from pathlib import Path
+from dotenv import dotenv_values
+from utils.migrateFiles import LidarHdFilesMigration
 
-## for standardization of the coordinates (https://pyproj4.github.io/pyproj/stable/examples.html)
+
+config = dotenv_values(dotenv_path='.env')
+
 from pyproj import Transformer, Proj
 from functools import partial
 
-
-
-from dotenv import load_dotenv
 from subprocess import check_call
 import shutil
 from osgeo import gdal
-
 ## for handling the SHP files that are streamed / downloaded
 gdal.SetConfigOption('SHAPE_RESTORE_SHX', 'YES')
-
-load_dotenv()
 
 ## api to access the w3 storage.
 w3 = API(os.getenv("W3_API_KEY"))
@@ -37,14 +34,15 @@ def fetch_shp_file(ipfs_cid, _filename, username) -> str:
     """
     gets the file that needs to be used for the rendering the resulting surface reconstruction of the given portion
     
-    params:
+    Parameters:
+
     
     :ipfs_cid: is the CID hash where the file is stored on IPFS
     :_filename: is the name of the file to be downloaded (with the extension)
-    :username: is for storing the file corresponding to the given user
+    :username: is in which folder the given file is to be stored for maintaining the result separation.
     """
     
-    # create a directory for the user for the first time (to be done eventually )
+    # create a directory for the user for the first time.
     path_datas = os.path.join(os.getcwd() + "/datas")
     userdir = (path_datas + "/" + username)
 
@@ -55,7 +53,7 @@ def fetch_shp_file(ipfs_cid, _filename, username) -> str:
     
     print("Running with ipfs_cid={}, filename={}".format( ipfs_cid,_filename ) )
     url = 'https://' + ipfs_cid + '.ipfs.w3s.link/' + _filename 
-    out_file = run(['wget', '-U "Mozilla/5.0', url , '-O', _filename])
+    out_file = run(['wget', '-U Mozilla/5.0', url , '-O', _filename])
         
     print("output status" + str(out_file.returncode))
     if out_file.returncode!= 0:
@@ -64,16 +62,13 @@ def fetch_shp_file(ipfs_cid, _filename, username) -> str:
     else:
         print("file downloaded in {}{}".format(os.getcwd() + '/' +"datas/",_filename))
     
-    return (os.getcwd() + "/" +_filename)
+    return (os.getcwd() + "/datas" +_filename)
   
- 
- 
 def create_bounding_box(latitude_max: int, lattitude_min: int, longitude_max: int, longitude_min: int):
     """
-    Create a bounding box from 4 coordinates
+    Create a bounding box which the user selects to fetch the parameters for the given file parameters
     """
     return Polygon([(longitude_min, lattitude_min), (longitude_max, lattitude_min), (longitude_max, latitude_max), (longitude_min, latitude_max), (longitude_min, lattitude_min)])
-
 
 
 
@@ -85,7 +80,7 @@ def get_tile_details_polygon(pointargs: list(str), ipfs_cid: str, username: str,
     :username: identifier for the given shp file that is storing the file.
     
     :epsg_standard: defines the coordinate standards for which the given given coordinate values are to be transformed
-        - by default the coordinates will be taken for french standard, but can be defined based on specific regions standard.
+        - by default the coordinates will be taken for french standard, but can be defined based on specific regions.
     Returns:
     
     laz file url which is to be downloaded
@@ -110,7 +105,7 @@ def get_tile_details_polygon(pointargs: list(str), ipfs_cid: str, username: str,
         transform, Proj(epsg_standard[0]), Proj(epsg_standard[1])
     )
     
-    polygonTransform = transform(projection)
+    polygonTransform = transform(projection, polygonRegion)
     
     out = data.intersects(polygonTransform)
     res = data.loc[out]
@@ -171,10 +166,18 @@ def generate_pdal_pipeline( dirname: str,pipeline_template_ipfs: str, username: 
     :pipeline_template_ipfs: is the reference of the pipeline template is stored.  
     :epsg_srs: is the coordinate standard corresponding to the given template position.
     """
-    ## fetch the file
+   
+    path_datas = os.path.join(os.getcwd() + "/datas" + username) 
     
+    url = 'https://' + pipeline_template_ipfs + '.ipfs.w3s.link/pipeline_template.json' 
+       
+    try:
+        filedownload = run(['wget', '-U Mozilla/5.0', url , '-O', path_datas + 'pipeline_template.json'])
+
+    except IOError as e:
+        print("error to download file"+e)
     
-    pipeline_filedir = fetch_shp_file(pipeline_template_ipfs, 'pipeline_template.json', username)
+    pipeline_filedir = path_datas +'pipeline_template.json'
     
     # Pdal pipeline is specified by a json
     # basically it's a list of filters which can specify actions to perform
@@ -280,6 +283,7 @@ def run_georender_pipeline_point(vals=sys.argv):
     if not os.path.isfile( fname ): 
         check_call( ["wget", "--user-agent=Mozilla/5.0", laz_path])
     # Extract it
+    
     check_call( ["7z", "-y", "x", fname] ) 
     pipeline_ipfs = parameters["ipfs_cid"][0]
     generate_pdal_pipeline( dirname, pipeline_ipfs, parameters["username"] )
@@ -305,7 +309,7 @@ def run_georender_pipeline_point(vals=sys.argv):
     w3.post_upload()
 
 
-def run_georender_pipeline_polygon():
+def run_georender_pipeline_polygon(cliargs=None):
     """
     This function allows to run pipeline for the given bounded location and gives back the rendered 3D tileset
     :coordinates: a list of 4 coordinates [lattitude_max, lattitude_min, longitude_max, longitude_min ]
@@ -315,8 +319,8 @@ def run_georender_pipeline_polygon():
     args.add_argument("coordinates", nargs=4, help="writes the bounding coordinates (longitude max/ min and then lattitude points separated by ,)")
     args.add_argument("username")
     args.add_argument("ipfs_cid",nargs='+',help="compulsory: adds the ipfs of the raw cloud image and the corresponding pipeline template. add first the cid of laz file and then of the pipeline template (separated by the space)", required=True)
-    args.add_argument("filename")
-    parameters = args.parse_args()
+    args.add_argument("filename", help="defines the filename of the given laz file that you want to generate 3D points for")
+    parameters = args.parse_args(cliargs)
     
     laz_path, fname, dirname = get_tile_details_point(parameters.coordinateX, parameters.coordinateY, parameters.userprofile, parameters.filename, parameters.ipfs_cid)
 
@@ -333,10 +337,7 @@ def run_georender_pipeline_polygon():
 
     # run pdal pipeline with the generated json :
     os.chdir( dirname )
-    # todo : There should be further doc and conditions on this part
-    #        Like understanding why some ign files have it and some don't
-    # In case the WKT flag is not set :
-    # need to handle the edge cases with different EPSG coordinate standards
+    
     for laz_fname in os.listdir( '.' ):
         f = open( laz_fname, 'rb+' )
         f.seek( 6 )
@@ -349,7 +350,6 @@ def run_georender_pipeline_polygon():
     shutil.move( 'result.las', '../result.las' )
     print('resulting rendering successfully generated, now uploading the files to ipfs')
     w3.post_upload('result.las')
-    w3.post_upload()
     
 def las_to_tiles_conversion(username: str):
     """
@@ -376,10 +376,13 @@ def las_to_tiles_conversion(username: str):
         w3.post_upload(files=file_name)
 
 def main(cliargs=None):
+    # if cliargs == 'migrate':
+    #     print('migrating the files')
+    #     migrateFiles = LidarHdFilesMigration(APIKey=config["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDZENUE1NmQxYTFEZDAzYmFhZjkyQTUwOTA1NzIwQWJmMDdkOTQzQkEiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2ODI1ODUzMDgxMzgsIm5hbWUiOiJleHRyYS1jb21tdW5pdHktQVBJIn0.CW_1s8nBQwb-GZF_R4SPI4NQsKP7KETuaGRssAkekTc"])
     args = argparse.ArgumentParser().parse_args(cliargs)
     run_georender_pipeline_point(sys.argv[1:])
     print("now storing the tiled files to the destination web3.storage")
     las_to_tiles_conversion(cliargs["username"])
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv)

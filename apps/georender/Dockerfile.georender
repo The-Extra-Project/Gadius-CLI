@@ -1,37 +1,28 @@
-FROM pdal/pdal
+FROM pdal/pdal as build
+
+RUN mkdir -p /usr/src/app/georender
+
+COPY . /usr/src/app/georender/
+
+ADD pyproject.toml /usr/src/app/georender/pyproject.toml
 
 
-## copying all the files from the local machine to the given docker container
+RUN  apt-get update && apt-get install -y git wget jq p7zip-full --assume-yes && apt-get install -y python3-pip python3-dev --assume-yes
 
-WORKDIR /usr/src/app
-
-## there is difference between ADD and COPY. copy will only transfer the files from the given dockerfile source to destination
-## whereas the ADD command transfers the file from the 
-ADD poetry.lock pyproject.toml /usr/src/app/georender/
-ADD . /usr/src/app/georender/
-
-RUN  apt-get update && apt-get install -y git wget jq p7zip-full --assume-yes
-
-RUN  apt-get install -y python3-pip python3-dev --assume-yes
-
-
-# installing poetry
-RUN curl -sSL https://install.python-poetry.org | python3 -   && export PATH="/root/.local/bin:$PATH" && cd /georender/ && poetry install
-
-
-
-
-RUN apt-get update \
-    && pip install  --upgrade pip  \
-    && /opt/conda/bin/pip3 install geopandas \
+RUN cd /usr/src/app/georender \
+&& curl -sSL https://install.python-poetry.org | python3 -   && export PATH="/root/.local/bin:$PATH"
 
 WORKDIR /usr/src/app/georender
 
-RUN chmod +x ./run_module.sh 
+
+# RUN apt-get update \
+#     && pip install  --upgrade pip  \
+
+FROM --platform=arm64 georender_build  
+
+COPY --from=build /usr/src/app/georender/ /usr/src/app/georender/
+
+RUN chmod 777 ./run_module.sh 
 
 EXPOSE 8081
-ENTRYPOINT [ "/bin/bash", "-c", "./run_module.sh" ]   
-
-
-# FROM build as test
-# CMD [ "pytest", "tests/test_georender.py" ]
+ENTRYPOINT [  "./run_module.sh" ]   
