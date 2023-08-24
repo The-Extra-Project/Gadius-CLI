@@ -18,7 +18,7 @@
       "vitest": "~0.32.0"
    },
    "scripts": {
-      "build": "npx turbo run build",
+      "build": "npx turbo run build --filter='./apps/*'",
       "test": "npx turbo run test"
    },
    "workspaces": [

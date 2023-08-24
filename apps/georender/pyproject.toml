@@ -18,11 +18,14 @@ readme = 'README.md'
   include = "src/"
 
   [tool.poetry.dependencies]
-  python = "^3.11"
+  python = ">3.9.7"
   py3dtiles = "*"
   geopandas = "==0.13.2"
   shapely = "==2.0.1"
   pyproj = "*"
+  gdal = "^3.7.1.1"
+  requests = "^2.31.0"
+  python-dotenv = "^1.0.0"
   
   [tool.poetry.group.dev.dependencies]
   autopep8 = "2.0.2"

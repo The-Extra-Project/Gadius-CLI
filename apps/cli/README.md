@@ -1,5 +1,5 @@
 # @gadus/reconstruction-cli package
-This cli pacjkage wraps the call above the lillypad / 3DTIlesrendering in order to execute the georender package and then rendering the job once the resulting 3Dtile is generated.
+This cli package wraps the call above the lillypad / 3DTIlesrendering in order to execute the georender package and then rendering the job once the resulting 3Dtile is generated.
 
 ## Building steps:
 

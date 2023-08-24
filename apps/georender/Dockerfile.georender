@@ -1,4 +1,4 @@
-FROM pdal/pdal as build
+FROM --platform=x86_64 pdal/pdal 
 
 RUN mkdir -p /usr/src/app/georender
 
@@ -7,20 +7,21 @@ COPY . /usr/src/app/georender/
 ADD pyproject.toml /usr/src/app/georender/pyproject.toml
 
 
-RUN  apt-get update && apt-get install -y git wget jq p7zip-full --assume-yes && apt-get install -y python3-pip python3-dev --assume-yes
+RUN  apt-get update 
+RUN apt-get install -y git wget jq p7zip-full --assume-yes 
+RUN apt-get install -y python3-pip python3-dev --assume-yes
+
 
 RUN cd /usr/src/app/georender \
-&& curl -sSL https://install.python-poetry.org | python3 -   && export PATH="/root/.local/bin:$PATH"
+&& curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/src/poetry/ python3 -  
 
 WORKDIR /usr/src/app/georender
 
+RUN /usr/src/poetry install
 
 # RUN apt-get update \
 #     && pip install  --upgrade pip  \
 
-FROM --platform=arm64 georender_build  
-
-COPY --from=build /usr/src/app/georender/ /usr/src/app/georender/
 
 RUN chmod 777 ./run_module.sh 
 

@@ -15,11 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "dfns": ["package/dfns/src/index.ts"],
-      "cli": ["apps/cli/src/index.ts"]
+      "dfns": ["package/dfns/**"],
+      "contracts": ["apps/contracts/**"],
     }
   },
-  "typeRoots": ["node_modules/@types"],
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "tmp"]
 }

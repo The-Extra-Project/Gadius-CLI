@@ -1,12 +1,17 @@
 import { ethers } from "ethers"
-import { configDotenv, } from "dotenv"
+import { configDotenv } from "dotenv"
 import { config, abi_erc20 } from "../../deployedAddress.config"
-import { ModicrumContractAdapter__factory } from "../../../contracts/src/types"
+//import { ModicrumContractAdapter__factory } from "contracts/src/types"
 import { provider } from "../utils/auth-web3"
 import { appendFileSync } from "fs"
-
+//import  "../../../../packages/contracts/hardhat.config"
 
 configDotenv({ path: "../.env" })
+
+/**
+ * @abstract defines the contract operations that provides details regarding the
+ * 
+ */
 
 export class ContractOperations {
     provider: ethers.providers.JsonRpcProvider
@@ -15,7 +20,7 @@ export class ContractOperations {
     addressModicrum: string
     tokenInterface: ethers.utils.Interface
     tokenContract: ethers.Contract
-    modicrumContractAdapter: ethers.utils.Interface
+   modicrumContractAdapter: ethers.utils.Interface
 
     constructor(
         createdWallet: ethers.Wallet
@@ -24,7 +29,7 @@ export class ContractOperations {
         this.addressToken = config.testnetTokenAddress
         this.addressModicrum = config.modicrum
         this.tokenInterface = new ethers.utils.Interface(abi_erc20)
-        this.modicrumContractAdapter = new ethers.utils.Interface(ModicrumContractAdapter__factory.abi)
+     //   this.modicrumContractAdapter = new ethers.utils.Interface(ModicrumContractAdapter__factory.abi)
         this.tokenContract = new ethers.Contract(config.testnetTokenAddress, abi_erc20)
         this.wallet = createdWallet
     }
@@ -73,7 +78,7 @@ export class ContractOperations {
         const signer = await this.provider.getSigner(this.wallet.address)
         let transaction_encoding: ethers.utils.UnsignedTransaction = {
             to: config["modicrum"],
-            data: this.modicrumContractAdapter.encodeFunctionData("acceptResult", [
+             data:  this.modicrumContractAdapter.encodeFunctionData("acceptResult", [
                 jobOfferId,resultId
             ])
         }; 
@@ -90,18 +95,7 @@ export class ContractOperations {
         }
         
     }
-
-
-    async executePointcloudData(Xcooddinate, Ycoordinate, imageInformation ) {
-        const signer = await this.provider.getSigner(this.wallet.address);
-        
-
-    }
-
 }
-
-
-
 enum WalletType {
     noncustodial_demo,
     custodial
@@ -121,9 +115,9 @@ export async function createWallet(privateKey?: string, walletChoice: WalletType
     let wallet: ethers.Wallet
     try {
         if (!privateKey) {
-            // wallet = ethers.Wallet.createRandom(
-            //     provider
-            // )
+            wallet = ethers.Wallet.createRandom(
+                provider
+            )
             // not a secure way for build package, need to make it valid from the secure enclave.
             appendFileSync('../../.env', 'PRIVATE_KEY_TREASURY=' + wallet.privateKey)
             walletAddress = wallet.address
@@ -131,7 +125,6 @@ export async function createWallet(privateKey?: string, walletChoice: WalletType
         }
 
        wallet = new ethers.Wallet(formattedKey, provider)
-       appendFileSync('../../.env', 'PRIVATE_KEY_TREASURY=' + wallet.privateKey)
 
     }
 

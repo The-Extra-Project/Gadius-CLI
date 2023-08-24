@@ -14,11 +14,10 @@ services:
 
   migration:
     build:
-      context: .
+      context: ./utils
       dockerfile: Dockerfile.migrateFiles
     volumes:
       - type: bind
         source: ./utils/
         target: /usr/src/app/migration/
     
-  

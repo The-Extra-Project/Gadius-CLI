@@ -1,0 +1,27 @@
+{
+  "name": "georender",
+  "version": "0.1.0",
+  "description": "package json file for building application with turbo.",
+  "main": "index.ts",
+  "directories": {
+    "test": "tests",
+    "build": ""
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "docker",
+    "python"
+  ],
+  "author": "Dhruv",
+  "license": "ISC",
+  "dependencies": {
+    "open": "^9.1.0"
+  },
+  "devDependencies": {
+    "3d-tiles-renderer": "^0.3.20",
+    "three": "^0.155.0",
+    "web3.storage": "^4.5.5"
+  }
+}

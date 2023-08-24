@@ -1,18 +1,46 @@
-import {exec} from "child_process"
-
-
+import {exec, spawn} from "child_process"
+import {ContractOperations} from "./contract-operations"
+import { RPC } from "src/utils/auth-web3";
 
 interface surfaceReconstructionJob {
 image?: string,
-coorindates: string[],
+coorindates: string[]
 }
 
 
-export async function lilypad_job_point(params:surfaceReconstructionJob) {
+class lilypadFunction() {
+    
+contractAddress: String
 
-try {
-    exec("/bin/bash  -c lilypad  run" + params.image + "," + params.coorindates[0] + "," + params.coorindates[1])
+constructor(address: str) {
+        this.contractAddress = address
+    }
+
+async createJobPoint(parameters: surfaceReconstructionJob) {
+
+exec("/bin/bash -c lilypad /user/src/app/ ")
+
+}
+
+
+
+}
+
+
+
+export async function lilypad_job_point(Xcoordinate, Ycoordinate, privkey) {
+
+    try {
+
+    
+
+    
 } catch(error) {
     console.error("Error  while execution:", error);
+    
 }
+
+
+
 }
+

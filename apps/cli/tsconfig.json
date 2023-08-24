@@ -1,5 +1,5 @@
 {
-
+  "extends":"../../tsconfig.base.json",
   "compileOnSave": true,
   "compilerOptions": {
     "outDir": "dist/",
@@ -18,7 +18,7 @@
     "paths": {},
   },
   "ts-node": {
-    "esm": true
+    "esm": false
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules"]
 }

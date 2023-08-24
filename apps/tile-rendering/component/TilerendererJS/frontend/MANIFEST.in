@@ -1,0 +1,3 @@
+recursive-include 3DTIlrenderer/threeDTilerendererJS/build *
+BUILD_PATH='build/'
+GENERATE_SOURCEMAP=false

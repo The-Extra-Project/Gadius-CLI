@@ -1,17 +1,22 @@
-# @Gaedus/georender
+# Georender
 
-This package implements whole pipeline for rendering the [3D tile specification]() on bacalau.  
+This package implements whole pipeline for running the [3D surface reconstruction]() on bacalhau. this package will be deployed as container on which the [cli](../cli/)  will be running the compute job.
 
-## dependencies: 
+## Dependencies: 
 
-defined in the requirements.txt , this package will also need external packages like gosecimulator for rendering etc.
+core dependencies are defined in pyproject.toml, you  can install them via `poetry install`
+
+this package will also need external packages like:
+ - [3Dtilesrenderer](https://github.com/NASA-AMMOS/3DTilesRendererJS): cli package that is used for rendering the resulting 3D tile format into visual format.
+
+- [gdal]: in order for smooth functioning of the gdal package, you need to setup gdal installation
+    - `brew install gdal` for macos
+
+GDAL package faces issues while running on the macos along with the fact that its not pep517 compliant package, so reduce the issues by [following advice](https://stackoverflow.com/questions/70970561/install-gdal-on-poetry-project) on how to set it up, or better run it via the docker container.
+
 
 ## setup: 
 
-- Do the build using `docker compute build`.
+- Add the private key of your dockerhub account in the .env file (as described in the `.env.example` file in the root folder).
 
-- Do the necessary changes and then push the changes to the dockerhub (in out case we will be using the details).
-
-### pipeline workflow:
-
-1. first the pipeline which is executed by the docker container 
+- Then run the docker container build in order to run compute job onchain.

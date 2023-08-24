@@ -9,6 +9,8 @@ COPY run_migration.sh /usr/src/app/migration/run_migration.sh
 
 RUN  apt-get update && apt-get install -y git wget jq p7zip-full --assume-yes && apt-get install -y python3-pip python3-dev --assume-yes
 
+ENV PATH="$PATH:/etc/profile"
+
 RUN cd /usr/src/app/migration \
 && curl -sSL https://install.python-poetry.org | python3 -   && export PATH="/root/.local/bin:$PATH"
 

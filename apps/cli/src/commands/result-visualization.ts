@@ -15,7 +15,10 @@ interface Parameters {
 class ResultVisualization {
   streamlitProviderUrl: any;
   constructor() {
-    exec('/bin/bash -c streamlit run  ' + '../../tile-rendering/app.py');
+    exec ('/bin/bash -c cd ../../tile-rendering && poetry shell',  (err,output,errString) => {
+      console.log('tile-rendering application activated' + output);
+    })
+    exec('/bin/bash -c streamlit run' + 'app.py');
     this.streamlitProviderUrl = 'https://localhost:8501';
   }
   /**
@@ -24,6 +27,7 @@ class ResultVisualization {
   renderURIOutput() {
     open(this.streamlitProviderUrl);
   }
+
 }
 
 export function createStreamlitPopup() {

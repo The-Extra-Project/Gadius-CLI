@@ -4,7 +4,7 @@ import geopandas as gpd
 import json
 from shapely.geometry import Polygon, Point
 from shapely.ops import transform
-from utils.web3Storage import API
+from apps.migration.web3Storage import API
 import os
 from subprocess import run
 import logging
@@ -12,7 +12,7 @@ from py3dtiles  import Tileset
 import sys
 from pathlib import Path
 from dotenv import dotenv_values
-from utils.migrateFiles import LidarHdFilesMigration
+from utils.migrateFiles_copc import LidarHdFilesMigration
 
 
 config = dotenv_values(dotenv_path='.env')
@@ -223,11 +223,7 @@ def generate_pdal_pipeline( dirname: str,pipeline_template_ipfs: str, username: 
 
 ## cli functions:
 """ functions to seting up the input and then georender pipeline. 
-
-python georender.py <<function-name>> parameters
-
 """
-
 def upload_files():
     """
     uploads the  along with all the shp files into the given web3 storage provider (pipeline and shp files).
@@ -307,7 +303,6 @@ def run_georender_pipeline_point(vals=sys.argv):
     print('resulting rendering successfully generated, now uploading the files to ipfs')
     w3.post_upload('result.las')
     w3.post_upload()
-
 
 def run_georender_pipeline_polygon(cliargs=None):
     """

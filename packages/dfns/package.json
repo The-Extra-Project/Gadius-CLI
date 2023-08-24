@@ -1,0 +1,24 @@
+{
+  "name": "dfns",
+  "version": "0.0.1",
+  "description": "an wallet orchestration service for clients to interact with the lilypad infrastructure",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc -p ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/The-Extra-Project/Gadius-CLI/packages/dfns"
+  },
+  "keywords": [
+    "web3-wallet",
+    "waas"
+  ],
+  "author": "Dhruv Malik",
+  "license": "MIT",
+  "dependencies": {
+    "@dfns/sdk": "^0.1.0-alpha.10",
+    "@dfns/sdk-keysigner": "^0.1.0-alpha.10-2"
+  }
+}

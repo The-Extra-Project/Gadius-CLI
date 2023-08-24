@@ -9,7 +9,7 @@ class inputparam:
     
 
 
-PROD = False 
+PROD = True
 if PROD:
     _tile_component = components.declare_component(name="TilerendererJS",url="http://localhost:3001")
 else:
@@ -33,18 +33,19 @@ def threeTileRenderer(ipfs_file_uri: str, filename: str ):
     ipfs_file = "bafybeieoxxdf73ptkw3uqgx225fxpacc6gxdmvb3t5hggtnjmro72e3wl4"
     filename = "pipeline_gen"    
 
+    #let ipfsName = data.args["ipfs_cid"];
+    #let tileset = data.args["tileset_details"];
+
     
-    threedcomponent = _tile_component(ipfs_file,filename)
+    threedcomponent = _tile_component(ipfsName=ipfs_file,tileset=filename)
 
 ## below is for purely unit testing (by running the code in isolation).
 ## the parameters provided can 
-    st.subheader("rendering component")
+    
     
     return threedcomponent
     
     
-
-threeTileRenderer(ipfs_file_uri=ipfs_file, filename=filename)
         
         
         
