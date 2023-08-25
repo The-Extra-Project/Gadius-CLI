@@ -12,7 +12,6 @@ from py3dtiles  import Tileset
 import sys
 from pathlib import Path
 from dotenv import dotenv_values
-from utils.migrateFiles_copc import LidarHdFilesMigration
 
 
 config = dotenv_values(dotenv_path='.env')
@@ -127,7 +126,7 @@ def get_tile_details_point(coordX, coordY,username, filename, ipfsCid, epsg_stan
     :coordY: Y coordinate of the given region
     :username: username of the user profile
     :ipfsCid: reference of the CID file that is already stored in the IPFS network.
-    :filename: name of the given input
+    :filename: name of the given SHP file format that you want to read. 
     :epsg_standards: coordinate standard defined as [input cooridnate standard to destination]
         - normally set for the input as EPSG:4326 (WGS) and destination as EPSG:2154 (french standard).
     """
@@ -244,31 +243,30 @@ def upload_files():
     return loaded_files_cid
 
 ## Pipeline creation
-def run_georender_pipeline_point(vals=sys.argv):
+def run_georender_pipeline_point():
     """
     this function the rendering data pipeline of various .laz file and generate the final 3Dtile format.
     :coordinateX: lattitude coordinate 
     :coordinateY: longitude coordinate 
     username: username of the user profile
     ipfs_cid:  ipfs addresses of the files that you need to run the operation, its the list of the following parameters
-    - pipeline temlate file address
+    - pipeline template file address
     - shp files address that you want to process
     
-    filename: name of the file  stored on the given ipfs.
+    filename: name of the file stored on the given ipfs.
     """
     # Uses geopanda and shapely to intersect gps coord with available laz tiles files
     # Returns corresponding download url and filename
     
     args = argparse.ArgumentParser(description="runs the georender pipeline based on the given geometric point")
     args.add_argument("coordinateX", help="write lattitude in source coordinate system")
-    args.add_argument("coordinateY")
+    args.add_argument("coordinateY", required=True)
     args.add_argument("username")
-    args.add_argument("ipfs_cid",nargs='+',help="compulsory: adds the ipfs of the raw cloud image and the corresponding pipeline template. add first the cid of laz file and then of the pipeline template (separated by the space)", required=True)
-    args.add_argument("filename")
+    args.add_argument("ipfs_shp_files", required=True)
+    args.add_argument("ipfs_template_files", required=True)
+    args.add_argument("filename_template")
     
-    if  len(vals):
-        parameters = vals
-        run_georender_pipeline_point(parameters)
+    parameters = args.parse_args()
     
     laz_path, fname, dirname = get_tile_details_point(parameters.coordinateX, parameters.coordinateY, parameters.userprofile, parameters.filename, parameters.ipfs_cid)
 
@@ -281,8 +279,8 @@ def run_georender_pipeline_point(vals=sys.argv):
     # Extract it
     
     check_call( ["7z", "-y", "x", fname] ) 
-    pipeline_ipfs = parameters["ipfs_cid"][0]
-    generate_pdal_pipeline( dirname, pipeline_ipfs, parameters["username"] )
+    pipeline_ipfs = parameters["ipfs_template_files"]
+    pipeline_file = generate_pdal_pipeline( dirname, pipeline_ipfs, parameters["username"] )
 
     # run pdal pipeline with the generated json :
     os.chdir( dirname )
@@ -296,8 +294,8 @@ def run_georender_pipeline_point(vals=sys.argv):
         f.write( bytes( [17, 0, 0, 0] ) )
         f.close()
     ## now running the command to generate the 3d tile from the stored pipeline 
-    pipeline_template = parameters["ipfs_cid"][1] 
-    check_call( ["pdal", "pipeline",pipeline_template] )
+    os.chdir()
+    check_call(["pdal", "pipeline",pipeline_file])
     
     shutil.move( 'result.las', '../result.las' )
     print('resulting rendering successfully generated, now uploading the files to ipfs')
