@@ -369,10 +369,10 @@ def las_to_tiles_conversion(username: str):
         w3.post_upload(files=file_name)
 
 def main(cliargs=None):
-    # if cliargs == 'migrate':
-    #     print('migrating the files')
-    #     migrateFiles = LidarHdFilesMigration(APIKey=config["eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDZENUE1NmQxYTFEZDAzYmFhZjkyQTUwOTA1NzIwQWJmMDdkOTQzQkEiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2ODI1ODUzMDgxMzgsIm5hbWUiOiJleHRyYS1jb21tdW5pdHktQVBJIn0.CW_1s8nBQwb-GZF_R4SPI4NQsKP7KETuaGRssAkekTc"])
+
     args = argparse.ArgumentParser().parse_args(cliargs)
+
+    ## TODO: setting up choice to run both the point and polygon submission jobs. 
     run_georender_pipeline_point(sys.argv[1:])
     print("now storing the tiled files to the destination web3.storage")
     las_to_tiles_conversion(cliargs["username"])
