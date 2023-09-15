@@ -17,6 +17,10 @@ module.exports = {
             }
         }
     ],
+    "plugins":[
+        "@typescript-eslint",
+        "prettier"
+    ],
     "parserOptions": {
         "ecmaVersion": "latest",
         "sourceType": "module"

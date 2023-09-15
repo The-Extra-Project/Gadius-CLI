@@ -9,14 +9,21 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "target": "ES6",
+    "target": "ES2020",
     "module": "CommonJS",
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {},
+    "allowJs": true
+
   },
+
+
+  "include": [
+    "src/**/*"
+  ],
   "ts-node": {
     "esm": false
   },

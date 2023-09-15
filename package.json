@@ -19,12 +19,14 @@
    },
    "scripts": {
       "build": "npx turbo run build --filter='./apps/*'",
-      "test": "npx turbo run test"
+      "test": "npx turbo run test --filter= './**/test/**.ts'",
+      "build:cli": "npx turbo run build cli"
    },
    "workspaces": [
-      "apps/**",
-      "package/**"
+      "apps/cli",
+      "apps/contracts"
    ],
+   "packageManager": "npm@8.13.0",
    "dependencies": {
       "@changesets/cli": "^2.26.2",
       "tslib": "2.5.0"

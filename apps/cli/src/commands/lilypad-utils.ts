@@ -1,46 +1,45 @@
-import {exec, spawn} from "child_process"
-import {ContractOperations} from "./contract-operations"
-import { RPC } from "src/utils/auth-web3";
+import { ContractOperations } from './contract-operations';
+import { RPC } from 'src/utils/auth-web3';
+import {modicrumAdapter, config } from "cli/deployedAddress.config"
+import {Conf} from "conf"
+import {Wallet, ethers} from "ethers"
 
-interface surfaceReconstructionJob {
-image?: string,
-coorindates: string[]
+export interface surfaceReconstructionJob {
+  image?: string;
+  coorindates: string[];
+  username: string;
+  shp_file_identifiers: string;
 }
 
+class lilypadFunction {
+  contractAddress: String;
+  AdapterFunctions: ContractOperations;
+  wallet: Wallet
+  constructor(address: String) {
 
-class lilypadFunction() {
-    
-contractAddress: String
+    this.contractAddress = address;
+    this.wallet = new Wallet(process.env.PRIVATE_KEY, new ethers.providers.JsonRpcProvider(RPC) )
+    this.AdapterFunctions = new ContractOperations(
+      this.wallet
+    )
+  }
 
-constructor(address: str) {
-        this.contractAddress = address
-    }
-
-async createJobPoint(parameters: surfaceReconstructionJob) {
-
-exec("/bin/bash -c lilypad /user/src/app/ ")
-
-}
-
-
-
-}
-
-
-
-export async function lilypad_job_point(Xcoordinate, Ycoordinate, privkey) {
-
+  /**
+   * @param parameters  defines the parameters (X,Y, ipfs cid for the referent template files and the shape file ) and optional coordinate system.
+   */
+  async createJobPoint(parameters: surfaceReconstructionJob) {
     try {
+      let jobId  = this.AdapterFunctions.createReconstructionJobPoint(
+          parameters
+        )
 
-    
+        console.log("computejob realised with" + jobId)
+        
+    } catch (error: any) {
+     
+    }
+  }
 
-    
-} catch(error) {
-    console.error("Error  while execution:", error);
-    
+
+
 }
-
-
-
-}
-

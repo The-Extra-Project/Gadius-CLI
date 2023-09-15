@@ -1,6 +1,5 @@
 import {ethers} from "hardhat"
 import {ModicrumContractAdapter__factory } from "../src/types"
-import { HardhatEthersSigner } from "@nomicfoundation/hardhat-ethers/src/signers"
 import { writeFileSync } from "fs"
 import config from "../hardhat.config"
 import  path  =  require("path")
@@ -31,6 +30,10 @@ const main = async () => {
 
     writeFileSync(
         pathCli, JSON.stringify(deployedAddress,null,2)
+    )
+
+    writeFileSync(
+        ModicrumContractAdapter__factory, JSON.stringify(deployedAddress,null,2)
     )
 
 

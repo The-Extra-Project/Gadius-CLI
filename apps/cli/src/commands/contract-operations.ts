@@ -1,15 +1,21 @@
 import { ethers } from "ethers"
 import { configDotenv } from "dotenv"
 import { config, abi_erc20 } from "../../deployedAddress.config"
-//import { ModicrumContractAdapter__factory } from "contracts/src/types"
+import {} from "contracts"
 import { provider } from "../utils/auth-web3"
 import { appendFileSync } from "fs"
-//import  "../../../../packages/contracts/hardhat.config"
+import {surfaceReconstructionJob} from "cli/src/commands/lilypad-utils"
 
+import {Conf} from "conf"
 configDotenv({ path: "../.env" })
 
+enum WalletType {
+    noncustodial_demo,
+    custodial
+}
+
 /**
- * @abstract defines the contract operations that provides details regarding the
+ * @abstract defines the contract operations for scheduling jobs by client.
  * 
  */
 
@@ -20,7 +26,10 @@ export class ContractOperations {
     addressModicrum: string
     tokenInterface: ethers.utils.Interface
     tokenContract: ethers.Contract
-   modicrumContractAdapter: ethers.utils.Interface
+    modicrumContractAdapter: ethers.utils.Interface
+    walletAddress: string
+    conf:Conf
+
 
     constructor(
         createdWallet: ethers.Wallet
@@ -29,10 +38,41 @@ export class ContractOperations {
         this.addressToken = config.testnetTokenAddress
         this.addressModicrum = config.modicrum
         this.tokenInterface = new ethers.utils.Interface(abi_erc20)
-     //   this.modicrumContractAdapter = new ethers.utils.Interface(ModicrumContractAdapter__factory.abi)
+       this.modicrumContractAdapter = new ethers.utils.Interface(ModicrumContractAdapter__factory
         this.tokenContract = new ethers.Contract(config.testnetTokenAddress, abi_erc20)
         this.wallet = createdWallet
+        this.conf = new Conf()
+
     }
+
+    async  createReconstructionJobPoint(params: surfaceReconstructionJob  ) {
+        let computeJob_param = ethers.utils.UnsignedTransaction = {
+            to: config["modicrum"],
+            data: this.modicrumContractAdapter.encodeFunctionData("computeJob",[params])
+            
+        }
+
+        const signer = await this.provider.getSigner(this.wallet.address)
+
+        //airdropping the tokens.
+        let transferOperation = (signer).populateTransaction(
+            computeJob_param
+        )
+
+
+        let simulateTransaction = (signer).sendTransaction(await transferOperation)
+        console.log("approximate results of the gas costs", (await simulateTransaction).gasPrice)
+
+        try {
+            const signTransaction = signer.signTransaction(computeJob_param)
+            const transaction = await signer.sendTransaction(await transferOperation)
+            console.log("transaction hash", transaction.hash)
+        } catch (error) {
+            console.log("error", error)
+        }
+    
+    }
+    
 
     async transferToken(
         destinationAddress: string, amount: string
@@ -86,7 +126,6 @@ export class ContractOperations {
         try {
 
             const populate_txn = await signer.populateTransaction(transaction_encoding);
-            const signTransaction =  signer.signTransaction(populate_txn);
 
             const transaction = await signer.sendUncheckedTransaction(populate_txn );
             console.log("transaction hash", transaction)
@@ -96,13 +135,6 @@ export class ContractOperations {
         
     }
 }
-enum WalletType {
-    noncustodial_demo,
-    custodial
-}
-
-
-let walletAddress: string
 
 /**
  * function for importing pre-existing wallet or the present wallet.
@@ -110,7 +142,7 @@ let walletAddress: string
  * @param walletChoice defines the nature of wallet that you want to set it up.
  */
 
-export async function createWallet(privateKey?: string, walletChoice: WalletType = WalletType.noncustodial_demo) {
+async function createWallet(privateKey?: string, walletChoice: WalletType = WalletType.noncustodial_demo) {
   let formattedKey = ethers.utils.hexlify(privateKey)
     let wallet: ethers.Wallet
     try {
@@ -119,9 +151,10 @@ export async function createWallet(privateKey?: string, walletChoice: WalletType
                 provider
             )
             // not a secure way for build package, need to make it valid from the secure enclave.
+            //appendFileSync('../../.env', 'PRIVATE_KEY_TREASURY=' + wallet.privateKey)
+                this.conf.add(process.env.PRIVATE_KEY_TREASURY,wallet.privateKey)
+            this.walletAddress = wallet.address
             appendFileSync('../../.env', 'PRIVATE_KEY_TREASURY=' + wallet.privateKey)
-            walletAddress = wallet.address
-
         }
 
        wallet = new ethers.Wallet(formattedKey, provider)
@@ -137,18 +170,18 @@ export async function createWallet(privateKey?: string, walletChoice: WalletType
 
 }
 
-export async function walletStatus(address: string) {
+ async function walletStatus(address: string) {
     //const walletAmount = ethers.formatUnits(await provider.getBalance(address), 'number')
     const walletAmount = ethers.utils.formatEther(await provider.getBalance(address))
     console.log('the address'+ walletAmount)
 }
 
 
-export async function mintTokens(address: string, amount: string ) {
+async function mintTokens(address: string, amount: string ) {
     let addressToken = config["testnetTokenAddress"]
     let contractObject = new ContractOperations(new ethers.Wallet(process.env.PRIVATE_KEY_TREASURY));
     try {
-        contractObject.transferToken(address, amount)
+        this.contractObject.transferToken(address, amount)
 
     }
 
@@ -158,10 +191,12 @@ export async function mintTokens(address: string, amount: string ) {
 }
 
 
-export async function acceptResult() {
-    let contractObject = new ContractOperations(new ethers.Wallet(process.env.PRIVATE_KEY_TREASURY));
 
+async function removeWallet() {
+    this.conf.delete(process.env.PRIVATE_KEY_TREASURY)
 }
+
+
 
 
 
