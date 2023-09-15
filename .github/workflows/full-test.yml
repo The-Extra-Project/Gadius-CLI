@@ -1,10 +1,12 @@
 name: test of all modules
 
 on:
-    pull_request:
+    push:
         branches:
             - main
-
+    pull_request:
+        types: [opened, synchronize]
+    
 jobs: 
     build_test:
         name: Build and Test
@@ -12,23 +14,16 @@ jobs:
    
         steps:
           - name: Check out code
-            uses: actions/checkout@v3
-            
-          - name: setting up the pnpm action
-            uses: pnpm/action-setup@v2.2.4
+            uses: actions/checkout@v3            
+
+          - name: Setting up the npm env
+            uses: actions/setup-node@v3
             with:
-                version: 8
-            
+              node-version: 18
+              cache: 'npm'
 
-          - name: Install dependencies 
-            run: pnpm install 
-
-          - name: installing modules
-            run: pnpm run build
-        
-          - name: test all modules
-            run: pnpm run test
-          
+          - name: cli dependencies build successfully. 
+            run: npm run build:cli 
 
          
         

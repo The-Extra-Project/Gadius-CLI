@@ -228,3 +228,8 @@ export const abi_erc20 =
       "type": "event"
   }
 ]
+
+export const modicrumAdapter = [
+    
+]
+

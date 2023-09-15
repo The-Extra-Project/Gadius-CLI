@@ -4,17 +4,31 @@
   "license": "MIT",
   "main": "./dist/index.js",
   "bin": "./dist/cli.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/The-extra-project/gadius.git"
+  },
+  "bugs": {
+    "url": "https://github.com/The-extra-project/gadius/issues"
+  },
   "scripts": {
     "start": "ts-node src/index.ts",
     "clean": "rimraf ./dist/ ./exec/",
-    "build": "npm run clean && tsc",
-    "cli": "node dist/cli/src/index.js -h"
+    "build": "npm run clean && tsc ",
+    "cli": "node dist/cli/src/index.js -h",
+    "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
+
+  "files": [
+    "src/*"
+  ],
   "private": true,
   "dependencies": {
     "chai": "^4.3.7",
     "chalk": "^5.3.0",
+    "conf": "^11.0.2",
     "figlet": "^1.6.0",
+    "kleur": "^4.1.5",
     "read": "^2.1.0",
     "tsc": "^2.0.4",
     "yargs": "^17.7.2"
@@ -22,7 +36,6 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.4.1",
     "commander": "^11.0.0",
-    "contracts": "*",
     "dotenv": "^16.3.1",
     "eslint": "^8.47.0",
     "eslint-config-standard-with-typescript": "^38.0.0",
