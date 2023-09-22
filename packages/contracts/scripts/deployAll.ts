@@ -32,9 +32,9 @@ const main = async () => {
         pathCli, JSON.stringify(deployedAddress,null,2)
     )
 
-    writeFileSync(
-        ModicrumContractAdapter__factory, JSON.stringify(deployedAddress,null,2)
-    )
+    // writeFileSync(
+    //     ModicrumContractAdapter__factory, JSON.stringify(deployedAddress,null,2)
+    // )
 
 
 }

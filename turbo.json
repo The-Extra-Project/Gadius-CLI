@@ -1,15 +1,17 @@
 {
     "$schema": "https://turbo.build/schema.json",
-    
     "globalDependencies": [
       "tsconfig.base.json"
     ],
-
     "pipeline": {
+
       "build": {
-        "dependsOn": ["src/**"],
+        "inputs": ["apps/**", "packages/**"],
         "outputs": ["dist/**"]
+      },
+      "build:cli": {
+        "inputs": ["cli/**"],
+        "outputs": ["cli/dist/**"]
     }    
   }
-
 }

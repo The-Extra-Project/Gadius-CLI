@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "cli": ["apps/cli/**"],
       "dfns": ["package/dfns/**"],
       "contracts": ["apps/contracts/**"],
     }

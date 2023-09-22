@@ -1,12 +1,12 @@
 import { ethers } from "ethers"
 import { configDotenv } from "dotenv"
-import { config, abi_erc20 } from "../../deployedAddress.config"
-import {} from "contracts"
+import { config, abi_erc20 } from "../../deployedAddress.config";
+import {ModicrumContractAdapter} from "contracts/src/types/index";
+
 import { provider } from "../utils/auth-web3"
 import { appendFileSync } from "fs"
 import {surfaceReconstructionJob} from "cli/src/commands/lilypad-utils"
 
-import {Conf} from "conf"
 configDotenv({ path: "../.env" })
 
 enum WalletType {
@@ -28,7 +28,7 @@ export class ContractOperations {
     tokenContract: ethers.Contract
     modicrumContractAdapter: ethers.utils.Interface
     walletAddress: string
-    conf:Conf
+
 
 
     constructor(
@@ -38,15 +38,15 @@ export class ContractOperations {
         this.addressToken = config.testnetTokenAddress
         this.addressModicrum = config.modicrum
         this.tokenInterface = new ethers.utils.Interface(abi_erc20)
-       this.modicrumContractAdapter = new ethers.utils.Interface(ModicrumContractAdapter__factory
+       //this.modicrumContractAdapter = new ethers.utils.Interface(ModicrumContractAdapter__factory
         this.tokenContract = new ethers.Contract(config.testnetTokenAddress, abi_erc20)
         this.wallet = createdWallet
-        this.conf = new Conf()
+        //this.conf = new Conf()
 
     }
 
     async  createReconstructionJobPoint(params: surfaceReconstructionJob  ) {
-        let computeJob_param = ethers.utils.UnsignedTransaction = {
+        let computeJob_param: ethers.utils.UnsignedTransaction = {
             to: config["modicrum"],
             data: this.modicrumContractAdapter.encodeFunctionData("computeJob",[params])
             
@@ -142,7 +142,7 @@ export class ContractOperations {
  * @param walletChoice defines the nature of wallet that you want to set it up.
  */
 
-async function createWallet(privateKey?: string, walletChoice: WalletType = WalletType.noncustodial_demo) {
+export async function createWallet(privateKey?: string, walletChoice: WalletType = WalletType.noncustodial_demo) {
   let formattedKey = ethers.utils.hexlify(privateKey)
     let wallet: ethers.Wallet
     try {
@@ -170,14 +170,14 @@ async function createWallet(privateKey?: string, walletChoice: WalletType = Wall
 
 }
 
- async function walletStatus(address: string) {
+export async function walletStatus(address: string) {
     //const walletAmount = ethers.formatUnits(await provider.getBalance(address), 'number')
     const walletAmount = ethers.utils.formatEther(await provider.getBalance(address))
     console.log('the address'+ walletAmount)
 }
 
 
-async function mintTokens(address: string, amount: string ) {
+export async function mintTokens(address: string, amount: string ) {
     let addressToken = config["testnetTokenAddress"]
     let contractObject = new ContractOperations(new ethers.Wallet(process.env.PRIVATE_KEY_TREASURY));
     try {

@@ -1,32 +1,9 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.8.6;
+import {IModicrumAdapter} from "../interfaces/IModicrumAdapter.sol";
+import {IModicrum} from "../interfaces/IModicrum.sol";
 
-
-interface IModicrumAdapter {
-
-    struct georenderPointParams {
-        string coordX;
-        string CoordY;
-        string username;
-        string ipfsCID;
-    }
-    
-    function runComputeJob(
-        georenderPointParams memory entrypointParams,
-        string calldata dockername
-    ) external payable returns(uint256);
-
-  
-}
-interface ModicrumContract {
-    function runModuleWithDefaultMediators(string calldata name, string calldata params) external payable returns (uint256);
-    function acceptResult(
-        uint256 resultId,
-        uint256 jobOfferId
-    ) external returns (uint256);
-  }
-  
 /// @title Modicrium client adapter contract
 /// @author Dhruv Malik
 /// @notice this needs to be connected with wallet and cli integration for paying the job fees.
@@ -36,9 +13,9 @@ contract ModicrumContractAdapter is IModicrumAdapter {
     
     event computeJobCompleted(uint jobId, address clientAddress);
     event computeJobStarted(uint jobId);
-    ModicrumContract remoteContractInstance;
+    IModicrum remoteContractInstance;
     constructor ()  {
-        remoteContractInstance = ModicrumContract(modicrumAddress);
+        remoteContractInstance = IModicrum(modicrumAddress);
     }
 
     /// @notice runs the compute job with no preference for the mediator
@@ -46,22 +23,14 @@ contract ModicrumContractAdapter is IModicrumAdapter {
     /// @param entrypointParams is the execution params of the given job
     /// @return the jobId which will be used for finding the state of the offer along with the
     function runComputeJob(
-       IModicrumAdapter.georenderPointParams memory entrypointParams,
+       string memory entrypointParams,
         string calldata dockername
     ) public payable returns (uint256) {
-        string memory params = string(
-            abi.encodePacked(
-                entrypointParams.coordX,
-                entrypointParams.CoordY,
-                entrypointParams.username,
-                entrypointParams.ipfsCID
-            )
-        );
+        string memory params = entrypointParams;
         uint256 jobId = remoteContractInstance.runModuleWithDefaultMediators(dockername, params);
         emit computeJobStarted(jobId);
         return jobId;
     }
-
     /// @dev Explain to a developer any extra details
     /// @param jobOfferId the corresponding jobId submitted by the user
     /// @param resultId is the corresponding result being stored in the 
@@ -71,6 +40,5 @@ contract ModicrumContractAdapter is IModicrumAdapter {
     ) public returns (uint256) {
         emit computeJobCompleted(jobOfferId, msg.sender);
         return remoteContractInstance.acceptResult(resultId, jobOfferId);
-
     }
 }

@@ -24,7 +24,7 @@
    },
    "workspaces": [
       "apps/cli",
-      "apps/contracts"
+      "packages/contracts"
    ],
    "packageManager": "npm@8.13.0",
    "dependencies": {

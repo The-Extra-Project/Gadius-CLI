@@ -1,7 +1,6 @@
 import { ContractOperations } from './contract-operations';
 import { RPC } from 'src/utils/auth-web3';
 import {modicrumAdapter, config } from "cli/deployedAddress.config"
-import {Conf} from "conf"
 import {Wallet, ethers} from "ethers"
 
 export interface surfaceReconstructionJob {
@@ -27,7 +26,7 @@ class lilypadFunction {
   /**
    * @param parameters  defines the parameters (X,Y, ipfs cid for the referent template files and the shape file ) and optional coordinate system.
    */
-  async createJobPoint(parameters: surfaceReconstructionJob) {
+   async createJobPoint(parameters: surfaceReconstructionJob) {
     try {
       let jobId  = this.AdapterFunctions.createReconstructionJobPoint(
           parameters

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 interface IModicrum {
+
     function runModuleWithDefaultMediators(
         string calldata name,
         string calldata params

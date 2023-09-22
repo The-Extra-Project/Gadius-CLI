@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { exec } from 'child_process';
 import * as figlet from 'figlet';
-import { lilypad_job_point } from './commands/lilypad-utils';
+//import { lilypad_job_point } from './commands/lilypad-utils';
 import {
   createWallet,
   walletStatus,
@@ -9,10 +9,12 @@ import {
 } from './commands/contract-operations';
 import { config } from '../../cli/deployedAddress.config';
 import { createStreamlitPopup } from './commands/result-visualization';
+
 /**
  * credits to the lighthouse-package : https://github.com/lighthouse-web3/lighthouse-package/ for the referencing their codebase for some of the integration scripts.
  *
  */
+
 let program = new Command('Gadus-cli');
 console.log(figlet.textSync('Gadus CLI', { font: 'Slant' }));
 
@@ -63,7 +65,7 @@ program
   .description(
     'allows user to create compute job on bacalhau / lillypad network with given catesian points as location'
   )
-  .action(lilypad_job_point);
+//  .action(lilypad_job_point);
 program
   .command('create-cod-polygon')
   .option(

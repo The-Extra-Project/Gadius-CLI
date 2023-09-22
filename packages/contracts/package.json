@@ -2,6 +2,8 @@
   "name": "contracts",
   "version": "0.0.1",
   "license": "MIT",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
   "scripts": {
     "compile": "hardhat compile",
     "clean": "rimraf ./dist/ ",
@@ -15,16 +17,13 @@
     "@dfns/sdk-keysigner": "^0.1.0-alpha.10-2",
     "@nomicfoundation/hardhat-ethers": "^3.0.4",
     "@openzeppelin/contracts": "^4.9.2",
-    "ethers": "5.4",
+    "ethers": "^6.1.0",
     "hardhat": "^2.17.0",
     "tslib": "^2.6.1"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
-    "@matterlabs/hardhat-zksync-deploy": "^0.6.3",
-    "@matterlabs/hardhat-zksync-solc": "^0.4.1",
-    "@matterlabs/hardhat-zksync-verify": "^0.1.8",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.6",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.8",
     "@nomicfoundation/hardhat-toolbox": "^2.0.2",
@@ -56,7 +55,6 @@
     "solidity-coverage": "^0.8.4",
     "ts-node": "^10.9.1",
     "typechain": "^8.3.0",
-    "typescript": "^5.1.6",
-    "zksync-web3": "^0.14.3"
+    "typescript": "^5.1.6"
   }
 }

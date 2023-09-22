@@ -229,7 +229,3 @@ export const abi_erc20 =
   }
 ]
 
-export const modicrumAdapter = [
-    
-]
-
