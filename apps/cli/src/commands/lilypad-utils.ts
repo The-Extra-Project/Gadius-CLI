@@ -1,7 +1,7 @@
 import { ContractOperations } from './contract-operations';
-import { RPC } from 'src/utils/auth-web3';
-import {modicrumAdapter, config } from "cli/deployedAddress.config"
-import {Wallet, ethers} from "ethers"
+import { RPC } from 'src/utils/connect-web3';
+import { modicrumAdapter, config } from 'cli/deployedAddress.config';
+import { Wallet, ethers } from 'ethers';
 
 export interface surfaceReconstructionJob {
   image?: string;
@@ -13,32 +13,25 @@ export interface surfaceReconstructionJob {
 class lilypadFunction {
   contractAddress: String;
   AdapterFunctions: ContractOperations;
-  wallet: Wallet
+  wallet: Wallet;
   constructor(address: String) {
-
     this.contractAddress = address;
-    this.wallet = new Wallet(process.env.PRIVATE_KEY, new ethers.providers.JsonRpcProvider(RPC) )
-    this.AdapterFunctions = new ContractOperations(
-      this.wallet
-    )
+    this.wallet = new Wallet(
+      process.env.PRIVATE_KEY,
+      new ethers.providers.JsonRpcProvider(RPC)
+    );
+    this.AdapterFunctions = new ContractOperations(this.wallet);
   }
 
   /**
    * @param parameters  defines the parameters (X,Y, ipfs cid for the referent template files and the shape file ) and optional coordinate system.
    */
-   async createJobPoint(parameters: surfaceReconstructionJob) {
+  async createJobPoint(parameters: surfaceReconstructionJob) {
     try {
-      let jobId  = this.AdapterFunctions.createReconstructionJobPoint(
-          parameters
-        )
+      let jobId =
+        this.AdapterFunctions.createReconstructionJobPoint(parameters);
 
-        console.log("computejob realised with" + jobId)
-        
-    } catch (error: any) {
-     
-    }
+      console.log('computejob realised with' + jobId);
+    } catch (error: any) {}
   }
-
-
-
 }

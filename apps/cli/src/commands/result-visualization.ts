@@ -14,10 +14,8 @@ interface Parameters {
 class ResultVisualization {
   streamlitProviderUrl: any;
   constructor() {
-   
-   this.streamlitProviderUrl = process.env.STREAMLIT_PROVIDER_URL || 'http://localhost:8501';
-    
-    
+    this.streamlitProviderUrl =
+      process.env.STREAMLIT_PROVIDER_URL || 'http://localhost:8501';
   }
   /**
    * opens the streamlit app to the given default browser provider
@@ -31,7 +29,7 @@ class ResultVisualization {
       }
     );
     exec('/bin/bash -c streamlit run' + 'app.py');
-    
+
     open(this.streamlitProviderUrl);
   }
 }

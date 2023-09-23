@@ -3,10 +3,16 @@ import { exec } from 'child_process';
 import * as figlet from 'figlet';
 //import { lilypad_job_point } from './commands/lilypad-utils';
 import {
-  createWallet,
-  walletStatus,
   mintTokens
 } from './commands/contract-operations';
+
+import {
+  createWallet,
+  walletStatus
+}
+from './commands/wallet'
+
+
 import { config } from '../../cli/deployedAddress.config';
 import { createStreamlitPopup } from './commands/result-visualization';
 
@@ -35,7 +41,7 @@ program.version('0.1.0');
 
 program
   .command('create-wallet')
-  .description('this creates the user wallet to run jobs on lillypad')
+  .description('this onboards the user wallet to run jobs on lillypad')
   .option(
     '-p, --private_key <key>',
     'integrates the wallet to the specific account'
@@ -64,7 +70,7 @@ program
   )
   .description(
     'allows user to create compute job on bacalhau / lillypad network with given catesian points as location'
-  )
+  );
 //  .action(lilypad_job_point);
 program
   .command('create-cod-polygon')
