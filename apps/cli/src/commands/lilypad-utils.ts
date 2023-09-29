@@ -1,7 +1,8 @@
 import { ContractOperations } from './contract-operations';
 import { RPC } from 'src/utils/connect-web3';
 import { modicrumAdapter, config } from 'cli/deployedAddress.config';
-import { Wallet, ethers } from 'ethers';
+import { ethers } from 'ethers';
+import { Wallet } from 'cli/src/commands/wallet';
 
 export interface surfaceReconstructionJob {
   image?: string;
@@ -10,16 +11,14 @@ export interface surfaceReconstructionJob {
   shp_file_identifiers: string;
 }
 
-class lilypadFunction {
+export class lilypadFunctions {
   contractAddress: String;
   AdapterFunctions: ContractOperations;
   wallet: Wallet;
+
   constructor(address: String) {
     this.contractAddress = address;
-    this.wallet = new Wallet(
-      process.env.PRIVATE_KEY,
-      new ethers.providers.JsonRpcProvider(RPC)
-    );
+    this.wallet = new Wallet();
     this.AdapterFunctions = new ContractOperations(this.wallet);
   }
 
@@ -34,4 +33,8 @@ class lilypadFunction {
       console.log('computejob realised with' + jobId);
     } catch (error: any) {}
   }
+
+
+
+
 }

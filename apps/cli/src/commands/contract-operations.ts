@@ -1,36 +1,40 @@
 import { ethers } from 'ethers';
 import { configDotenv } from 'dotenv';
 import { config, abi_erc20 } from '../../deployedAddress.config';
-
-import { ModicrumContractAdapter } from 'contracts/src/types/index';
+import { LocalSigner } from '@celo/wallet-local';
+import {
+  ModicrumContractAdapter,
+  ModicrumContractAdapter__factory
+} from 'contracts/src/types/index';
 import { provider } from '../utils/connect-web3';
-import { surfaceReconstructionJob } from 'cli/src/commands/lilypad-utils';
+import {
+  surfaceReconstructionJob,
+  lilypadFunctions
+} from 'cli/src/commands/lilypad-utils';
+import { Wallet } from './wallet';
 
 configDotenv({ path: '../.env' });
 
 /**
- * @abstract defines the contract operations for scheduling jobs by client.
+ * @abstract defines the contract interactions of cli with the adapter contract.
  *
  */
-
 export class ContractOperations {
   provider: ethers.providers.JsonRpcProvider;
-  wallet: ethers.Wallet;
-  addressToken: string;
-  addressModicrum: string;
+  wallet: Wallet;
+  addressToken: string; // fees token (lilETH on v0 and v2).
+  addressModicrum: string; // contract address of the adapter.
   tokenInterface: ethers.utils.Interface;
   tokenContract: ethers.Contract;
-  modicrumContractAdapter: ethers.utils.Interface;
+  modicrumContractAdapterAbi: any;
   walletAddress: string;
 
-  constructor(createdWallet: ethers.Wallet) {
-    this.provider = new ethers.providers.JsonRpcProvider(
-      process.env.JSON_PROVIDER || ''
-    );
+  constructor(createdWallet: Wallet) {
+    this.provider = new ethers.providers.JsonRpcProvider(process.env.RPC || '');
     this.addressToken = config.testnetTokenAddress;
-    this.addressModicrum = config.modicrum;
+    this.addressModicrum = config["modicrum"];
     this.tokenInterface = new ethers.utils.Interface(abi_erc20);
-    //this.modicrumContractAdapter = new ethers.utils.Interface(ModicrumContractAdapter__factory
+    this.modicrumContractAdapterAbi = ModicrumContractAdapter__factory.abi;
     this.tokenContract = new ethers.Contract(
       config.testnetTokenAddress,
       abi_erc20
@@ -42,26 +46,47 @@ export class ContractOperations {
   async createReconstructionJobPoint(params: surfaceReconstructionJob) {
     let computeJob_param: ethers.utils.UnsignedTransaction = {
       to: config['modicrum'],
-      data: this.modicrumContractAdapter.encodeFunctionData('computeJob', [
+      data: this.modicrumContractAdapterAbi.encodeFunctionData('computeJob', [
         params
       ])
     };
 
-    const signer = await this.provider.getSigner(this.wallet.address);
+    let signer = await this.provider.getSigner(this.wallet.walletAddress);
 
-    //airdropping the tokens.
-    let transferOperation = signer.populateTransaction(computeJob_param);
-
-    let simulateTransaction = signer.sendTransaction(await transferOperation);
-    console.log(
-      'approximate results of the gas costs',
-      (await simulateTransaction).gasPrice
+    let modicrumObject: ethers.Contract = new ethers.Contract(
+      this.addressModicrum, this.modicrumContractAdapterAbi,signer
     );
 
+    let inputParameters: ethers.utils.UnsignedTransaction = {
+      to: config['modicrum'],
+      data: this.modicrumContractAdapterAbi.encodeFunctionData(
+        'runComputeJob',
+        [
+          ''.concat(
+            params.coorindates[0],
+            '',
+            params.coorindates[1],
+            '',
+            params.shp_file_identifiers[0],
+            '',
+            params.shp_file_identifiers[1],
+            '',
+            params.username
+          ),
+          params.image
+        ]
+      )
+    };
+
+    // let simulateTransaction = signer.sendTransaction(inputParameters);
+    // console.log(
+    //   'approximate results of the gas costs',
+    //   (await simulateTransaction).gasPrice
+    // );
     try {
-      const signTransaction = signer.signTransaction(computeJob_param);
-      const transaction = await signer.sendTransaction(await transferOperation);
-      console.log('transaction hash', transaction.hash);
+      const signTransaction = this.wallet.signTransaction(computeJob_param);
+      console.log('transaction hash', (await signTransaction).sighash);
+      //await modicrumObject.
     } catch (error) {
       console.log('error', error);
     }
@@ -77,7 +102,7 @@ export class ContractOperations {
       ])
     };
 
-    const signer = await this.provider.getSigner(this.wallet.address);
+    const signer = await this.provider.getSigner(this.wallet.walletAddress);
 
     //airdropping the tokens.
     let transferOperation = signer.populateTransaction(
@@ -105,7 +130,7 @@ export class ContractOperations {
    * this function allows the client for
    */
   async AcceptResult(jobOfferId: number, resultId: number) {
-    const signer = await this.provider.getSigner(this.wallet.address);
+    const signer = await this.provider.getSigner(this.wallet.walletAddress);
     let transaction_encoding: ethers.utils.UnsignedTransaction = {
       to: config['modicrum'],
       data: this.modicrumContractAdapter.encodeFunctionData('acceptResult', [
@@ -125,16 +150,13 @@ export class ContractOperations {
       console.log('error', error);
     }
   }
-}
 
-export async function mintTokens(address: string, amount: string) {
-  let addressToken = config['testnetTokenAddress'];
-  let contractObject = new ContractOperations(
-    new ethers.Wallet(process.env.PRIVATE_KEY_TREASURY)
-  );
-  try {
-    this.contractObject.transferToken(address, amount);
-  } catch (e: any) {
-    console.log(e);
+  async mintTokens(address: string, amount: string) {
+    let addressToken = config['testnetTokenAddress'];
+    try {
+      this.transferToken(address, amount);
+    } catch (e: any) {
+      console.log(e);
+    }
   }
 }

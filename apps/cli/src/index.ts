@@ -2,16 +2,9 @@ import { Command } from 'commander';
 import { exec } from 'child_process';
 import * as figlet from 'figlet';
 //import { lilypad_job_point } from './commands/lilypad-utils';
-import {
-  mintTokens
-} from './commands/contract-operations';
+import { ContractOperations } from './commands/contract-operations';
 
-import {
-  createWallet,
-  walletStatus
-}
-from './commands/wallet'
-
+import { Wallet } from './commands/wallet';
 
 import { config } from '../../cli/deployedAddress.config';
 import { createStreamlitPopup } from './commands/result-visualization';
@@ -20,6 +13,9 @@ import { createStreamlitPopup } from './commands/result-visualization';
  * credits to the lighthouse-package : https://github.com/lighthouse-web3/lighthouse-package/ for the referencing their codebase for some of the integration scripts.
  *
  */
+
+let walletObject: Wallet ;
+let contractObject :ContractOperations;
 
 let program = new Command('Gadus-cli');
 console.log(figlet.textSync('Gadus CLI', { font: 'Slant' }));
@@ -40,18 +36,30 @@ program.addHelpText(
 program.version('0.1.0');
 
 program
-  .command('create-wallet')
+  .command('createWallet')
   .description('this onboards the user wallet to run jobs on lillypad')
   .option(
     '-p, --private_key <key>',
+    '-o, --option <option>',
     'integrates the wallet to the specific account'
   )
-  .action(createWallet);
+  .action(async (privateKey, option) => {
+    try {
+      walletObject = new Wallet(option);
+      await walletObject.createWallet(privateKey, option);
+   
+      contractObject = new ContractOperations(walletObject);
+    } catch (e: any) {
+      console.error(e);
+    }
+  });
 
 program
   .command('current-wallet-status')
   .description('gets current wallet amount and status')
-  .action(walletStatus);
+  .action(async () => {
+    await walletObject.walletStatus();
+  });
 
 program
   .command('mint_token')
@@ -60,7 +68,9 @@ program
   )
   .option('-t, --amount <amount>', 'Amount of tokens to mint')
   .option('-a, --address <address>', 'Address to mint tokens to')
-  .action(mintTokens);
+  .action(async (amount, address) => {
+    await contractObject.mintTokens(address, amount);
+  });
 
 program
   .command('create-cod-point')
@@ -102,6 +112,9 @@ program
     'resultId corresponding to the stored job'
   );
 
+
+
+
 program
   .command('open visualizer')
   .description(
@@ -111,18 +124,3 @@ program
 
 program.parse(process.argv);
 const options = program.opts();
-
-// if(options.job_point) {
-//     console.log('now running the job, waiting for getting back the result')
-// if (process.argv[1] == 'lxet/geo_coordinate' && process.argv[2] == typeof Number && process.argv[3] == typeof Number) {
-//     lilypad_job_point({
-//         image: process.argv[1],
-//        coorindates:[process.argv[2],
-//         process.argv[3]]})
-
-// }
-// }
-
-// else if(options.create_wallet) {
-//     console.log('setting up the user wallet')
-// }
