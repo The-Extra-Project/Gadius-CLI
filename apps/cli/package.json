@@ -1,8 +1,9 @@
 {
   "name": "cli",
   "version": "0.0.1",
+  "description": "",
   "license": "MIT",
-  "main": "./dist/index.js",
+  "main": "./dist/index.ts",
   "bin": "./dist/cli.js",
   "repository": {
     "type": "git",
@@ -12,11 +13,12 @@
     "url": "https://github.com/The-extra-project/gadius/issues"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "tsc src/index.ts",
     "clean": "rimraf ./dist/ ./exec/",
     "build": "npm run clean &&  npm install && tsc",
-    "cli": "node dist/cli/src/index.js -h",
-    "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write"
+    "cli": "node dist/index.js ",
+    "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "watch": "nodemon --watch './**/*.ts' --exec 'npm run build && npm run cli'"
   },
   "files": [
     "src/*"
@@ -33,7 +35,7 @@
     "chai": "^4.3.7",
     "chalk": "^5.3.0",
     "conf": "^11.0.2",
-    "contracts": "^0.0.1",
+    "dockerode": "^4.0.0",
     "figlet": "^1.6.0",
     "hardhat": "^2.18.2",
     "hardhat-ethers": "^1.0.1",
@@ -52,6 +54,8 @@
     "eslint-plugin-n": "^16.0.2",
     "eslint-plugin-promise": "^6.1.1",
     "ethers": "^5.7.1",
-    "prettier": "^2.6.2"
+    "nodemon": "^3.0.1",
+    "prettier": "^2.6.2",
+    "ts-node": "^10.9.1"
   }
 }

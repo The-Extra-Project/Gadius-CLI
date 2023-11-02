@@ -1,5 +1,4 @@
 {
-  "extends":"../../tsconfig.base.json",
   "compileOnSave": true,
   "compilerOptions": {
     "outDir": "dist/",
@@ -15,13 +14,15 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {},
-    "allowJs": true
+    "allowJs": true, 
   },
   "include": [
-    "src/index.ts"
-, "src/utils/**.ts"  ],
+    "./src/index.ts",
+ ],
   "ts-node": {
     "esm": false
   },
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

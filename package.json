@@ -18,7 +18,7 @@
       "vitest": "~0.32.0"
    },
    "scripts": {
-      "build": "npx turbo run build --filter='./apps/*'",
+      "build": "npx turbo run build --filter='./apps/cli'",
       "test": "npx turbo run test --filter= './**/test/**.ts'",
       "build:cli": "npx turbo run build cli"
    },
