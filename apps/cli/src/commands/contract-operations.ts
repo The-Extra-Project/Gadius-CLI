@@ -1,44 +1,34 @@
-// import { ethers } from 'ethers';
-// import { configDotenv } from 'dotenv';
-// import { config, abi_erc20 } from '../../deployedAddress.config';
-// import { LocalSigner } from '@celo/wallet-local';
-// import {
-//   ModicrumContractAdapter,
-//   ModicrumContractAdapter__factory
-// } from 'contracts/src/types/index';
-// import { provider } from '../utils/connect-web3';
+/**
+ * @abstract consist of the functions to schedule jobs and fetch the status with the lilypad localhost.
+ * 
+ */
 
-// import { Wallet } from './wallet';
+import { ethers } from 'ethers';
+import { configDotenv } from 'dotenv';
+import { LocalSigner, LocalWallet } from '@celo/wallet-local';
 
-// configDotenv({ path: '../.env' });
 
-// /**
-//  * @abstract defines the contract interactions of cli with the adapter contract.
-//  *
-//  */
-// export class ContractOperations {
-//   provider: ethers.providers.JsonRpcProvider;
-//   wallet: Wallet;
-//   addressToken: string; // fees token (lilETH on v0 and v2).
-//   addressModicrum: string; // contract address of the adapter.
-//   tokenInterface: ethers.utils.Interface;
-//   tokenContract: ethers.Contract;
-//   modicrumContractAdapterAbi: any;
-//   walletAddress: string;
+ configDotenv({ path: '../.env' });
 
-//   constructor(createdWallet: Wallet) {
-//     this.provider = new ethers.providers.JsonRpcProvider(process.env.RPC || '');
-//     this.addressToken = config.testnetTokenAddress;
-//     this.addressModicrum = config["modicrum"];
-//     this.tokenInterface = new ethers.utils.Interface(abi_erc20);
-//     this.modicrumContractAdapterAbi = ModicrumContractAdapter__factory.abi;
-//     this.tokenContract = new ethers.Contract(
-//       config.testnetTokenAddress,
-//       abi_erc20
-//     );
-//     this.wallet = createdWallet;
-//     this.provider = provider;
-//   }
+/**
+ * @abstract defines the contract interactions of cli with the adapter contract.
+ *
+ */
+ export class ContractOperations {
+
+  provider: ethers.providers.JsonRpcProvider;
+  addressToken: string; // fees token (lilETH on v0 and v2).
+  addressModicrum: string; // contract address of the adapter.
+  tokenInterface: ethers.utils.Interface;
+  tokenContract: ethers.Contract;
+  modicrumContractAdapterAbi: any;
+  walletAddress: string;
+  wallet: LocalWallet
+
+  constructor(createdWallet: LocalWallet) {
+    this.provider = new ethers.providers.JsonRpcProvider(process.env.RPC || '');
+    this.wallet = createdWallet;
+  }
 
 //   async createReconstructionJobPoint(params: surfaceReconstructionJob) {
 //     let computeJob_param: ethers.utils.UnsignedTransaction = {
@@ -156,4 +146,4 @@
 //       console.log(e);
 //     }
 //   }
-// }
+ }

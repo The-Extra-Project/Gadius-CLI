@@ -15,17 +15,29 @@ CLI for orchestrating jobs for geospatial analysis on onchain [COD](https://www.
 
 > npm install @devextralabs/cli
 
-Then setup the ENV variables in cli/.env file (private key of the testnet based account that has the testnet tokens) or define them onchain.
+Then setup the ENV variables in cli/.env file:
+    - RPC_URL (rpc url of the testnet)
+    -  (private key of the testnet based account that has the testnet tokens) 
 
-### 2. (from source):
+### 2. (from source): 
 
-1. build the CLI package: 
+we have also provided integration with the localhosted bacalau testnet along w/ lilypad stack to test the scheduling and execution of the compute jobs. this will be done in 2 steps
+
+1. clone the library with dependencies: 
+> git clone --recursive https://github.com/The-Extra-Project/Gadius-CLI 
+
+2. Go to the infra/lilypad folder in order to run the bash script that will setup the local [lilypad stack](https://github.com/bacalhau-project/lilypad/blob/main/CONTRIBUTING.md). 
+
+3. Copy the addresses of the deployed contract along w/ the RPC endpoint in the .env file
+
+
+4. build the CLI package: 
 ```
 npx turbo build cli
 
 ```
 
-2. then go the corresponding package to run the commands
+5. run the command
 
 ```
 cd apps/cli && npm run cli
