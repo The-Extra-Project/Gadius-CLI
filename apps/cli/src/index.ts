@@ -3,10 +3,14 @@ import { exec } from 'child_process';
 import * as figlet from 'figlet';
 //import { lilypad_job_point } from './commands/lilypad-utils';
 import { surfaceReconstructionType } from './commands/lilypad-utils';
-import { surfaceReconstructionJob } from './commands/Cli';
+import {
+  surfaceReconstructionJob,
+  surfaceReconstructionJobPolygon,
+  cityGMLPipelineGeneration,
+  neuralangelo_training
+} from './commands/jobs';
 
 /**
- * credits to the lighthouse-package : https://github.com/lighthouse-web3/lighthouse-package/ for the referencing their codebase for some of the integration scripts.
  *
  */
 
@@ -83,16 +87,24 @@ program
     '-i,--input <longitudeMax> <longitudeMin> <lattitudeMax> <lattitudeMin>',
     'defines the corresponding boundation which is used for the generation the rendering in 3Dtiles format'
   )
+  .option('-s, --shape_file <shape_file_cid>')
   .description(
     'allows user to create compute job resulting rendering of the bounded polygon region'
-  ).action(async (XMax, YMax, Xmin, YMin,  ) => {
-
-
-
-
-  })
-  
-  ;
+  )
+  .action(async (XMax, YMax, Xmin, YMin) => {
+    try {
+      surfaceReconstructionJobPolygon(
+        XMax,
+        YMax,
+        Xmin,
+        YMin,
+        '',
+        'devextralabs/colmap_processing'
+      );
+    } catch (e: any) {
+      console.log(e);
+    }
+  });
 
 program
   .command('create-job-cityGML')

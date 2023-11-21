@@ -18,7 +18,7 @@
     "build": "npm run clean &&  npm install && tsc",
     "cli": "node dist/index.js ",
     "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "watch": "nodemon --watch './**/*.ts' --exec 'npm run build && npm run cli'"
+    "watch": "tsc -w 'npm run build && npm run cli'"
   },
   "files": [
     "src/*"
