@@ -1,36 +1,35 @@
 {
-  "name": "circum",
-  "version": "0.0.1",
-  "author": "Dhruv <malikdhruv1994@gmail.com>",
-  "license": "MIT",
-  "private": "true",
-  "devDependencies": {
-    "@nx/eslint-plugin": "16.5.4",
-    "@nx/js": "16.5.4",
-    "@nx/linter": "16.5.4",
-    "@nx/vite": "16.5.4",
-    "@types/node": "18.7.1",
-    "@typescript-eslint/eslint-plugin": "^5.60.1",
-    "@typescript-eslint/parser": "^5.60.1",
-    "@vitest/coverage-c8": "~0.32.0",
-    "@vitest/ui": "~0.32.0",
-    "eslint": "~8.15.0",
-    "eslint-config-prettier": "8.1.0",
-    "nx": "16.5.3",
-    "nx-cloud": "latest",
-    "prettier": "^2.6.2",
-    "typescript": "~5.1.3",
-    "vite": "~4.3.9",
-    "vite-tsconfig-paths": "~4.2.0",
-    "vitest": "~0.32.0"
-  },
-  "script": {
-    "nx": "nx",
-    "serve": "nx run-many --target=serve --all"
-  },
-  "dependencies": {
-    "@nx/devkit": "^16.5.3",
-    "@nx/web": "^16.5.5",
-    "@nxlv/python": "^16.1.2"
-  }
+   "name": "gadus",
+   "version": "0.0.0",
+   "author": "Dhruv <malikdhruv1994@gmail.com>",
+   "license": "MIT",
+   "devDependencies": {
+      "@types/node": "18.7.1",
+      "@typescript-eslint/eslint-plugin": "^5.60.1",
+      "@typescript-eslint/parser": "^5.60.1",
+      "@vitest/coverage-c8": "~0.32.0",
+      "@vitest/ui": "~0.32.0",
+      "eslint": "~8.15.0",
+      "eslint-config-prettier": "8.1.0",
+      "prettier": "^2.6.2",
+      "typescript": "~5.1.3",
+      "vite": "~4.3.9",
+      "vite-tsconfig-paths": "~4.2.0",
+      "vitest": "~0.32.0"
+   },
+   "scripts": {
+      "build": "npx turbo run build --filter='./apps/cli'",
+      "test": "npx turbo run test --filter= './**/test/**.ts'",
+      "build:cli": "npx turbo run build cli"
+   },
+   "workspaces": [
+      "apps/cli",
+      "packages/contracts"
+   ],
+   "packageManager": "npm@8.13.0",
+   "dependencies": {
+      "@changesets/cli": "^2.26.2",
+      "tslib": "2.5.0"
+   },
+   "private": true
 }

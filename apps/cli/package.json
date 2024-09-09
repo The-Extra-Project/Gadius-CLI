@@ -1,27 +1,61 @@
 {
-  "name": "@gadius/cli",
+  "name": "cli",
   "version": "0.0.1",
+  "description": "",
   "license": "MIT",
-  "type": "module",
-  "scripts": {
-    "start": "ts-node src/index.ts",
-        "build": "tsc -p ."
+  "main": "./dist/index.ts",
+  "bin": "./dist/cli.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/The-extra-project/gadius.git"
   },
+  "bugs": {
+    "url": "https://github.com/The-extra-project/gadius/issues"
+  },
+  "scripts": {
+    "start": "tsc src/index.ts",
+    "clean": "rimraf ./dist/ ./exec/",
+    "build": "npm run clean &&  npm install && tsc",
+    "cli": "node dist/index.js ",
+    "prettier": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "watch": "tsc -w 'npm run build && npm run cli'"
+  },
+  "files": [
+    "src/*"
+  ],
   "private": true,
   "dependencies": {
+    "@celo/connect": "^5.0.4",
+    "@celo/keystores": "^5.0.4",
+    "@celo/wallet-ledger": "^5.0.4",
+    "@celo/wallet-local": "^5.0.4",
+    "@ledgerhq/hw-transport-node-hid": "^6.27.21",
+    "@ledgerhq/hw-transport-webhid": "^6.27.19",
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "chai": "^4.3.7",
     "chalk": "^5.3.0",
-    "tsc": "^2.0.4",
+    "conf": "^11.0.2",
+    "dockerode": "^4.0.0",
+    "figlet": "^1.6.0",
+    "hardhat": "^2.18.2",
+    "hardhat-ethers": "^1.0.1",
+    "kleur": "^4.1.5",
+    "read": "^2.1.0",
+    "typescript": "^5.1.6",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@nx/js": "16.5.5",
-    "@nx/workspace": "16.5.5",
+    "@typescript-eslint/eslint-plugin": "^6.4.1",
     "commander": "^11.0.0",
-    "nx": "16.5.5",
-    "nx-cloud": "latest",
+    "dotenv": "^16.3.1",
+    "eslint": "^8.47.0",
+    "eslint-config-standard-with-typescript": "^38.0.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-n": "^16.0.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "ethers": "^5.7.1",
+    "nodemon": "^3.0.1",
     "prettier": "^2.6.2",
-    "typescript": "^5.1.6",
-    "@gadius/dfns": "*",
-    "@gadius/contract": "*"
+    "ts-node": "^10.9.1"
   }
 }

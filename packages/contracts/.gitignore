@@ -5,11 +5,11 @@ dist
 tmp
 /out-tsc
 
-.env
-
 # dependencies
 node_modules
+.env
 
+src/types
 # IDEs and editors
 /.idea
 .project
@@ -39,3 +39,15 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+node_modules
+.env
+coverage
+coverage.json
+typechain
+typechain-types
+
+# Hardhat files
+cache
+artifacts
+

@@ -1,0 +1,3 @@
+[submodule "apps/infra"]
+	path = apps/infra
+	url = https://github.com/bacalhau-project/lilypad.git

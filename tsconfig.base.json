@@ -15,10 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@gadius/lib/dfns": ["libs/dfns/src/index.ts"],
-      "@gadius/apps/contracts": ["apps/contracts/"]
+      "cli": ["apps/cli/**"],
+      "dfns": ["package/dfns/**"],
+      "contracts": ["apps/contracts/**"],
     }
   },
-  "typeRoots": ["types", "node_modules/@types"],
   "include": ["**/*.ts"],
+  "exclude": ["node_modules", "tmp"]
 }

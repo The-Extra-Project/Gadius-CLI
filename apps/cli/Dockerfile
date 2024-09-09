@@ -1,13 +1,22 @@
-FROM ubuntu:22.04
+FROM node:lts-alpine
 
-COPY . /apps/cli
 
-WORKDIR /apps/cli
+COPY package.json ./usr/src/apps/cli/
 
-RUN apt-get -y update; apt-get -y install curl && curl -sSL -O https://bit.ly/get-lilypad && sudo install get-lilypad
+WORKDIR /usr/src/apps/cli
+RUN npm install  
 
-RUN yarn 
+
+WORKDIR /
+COPY . /usr/src/apps/cli
+WORKDIR /usr/src/apps/cli
+
+RUN npm i -g ts-node
+
+## installing the lilypad tool: 
+
 
 
 EXPOSE 8081
+CMD [ "ts-node", " /usr/src/apps/cli/src/index.ts" ]
 
